@@ -1,0 +1,77 @@
+{% extends "base.html" %}{% block title %}Security{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>Security</h1><p>Two-factor authentication for {{ session.email }}.</p></div>
+  <span class="status-pill {% if status.enabled %}status-won{% endif %}">{{ 'Protected' if status.enabled else 'Password only' }}</span>
+</header>
+
+{% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
+
+{% if codes %}
+<section class="form-surface">
+  <h2>Save these recovery codes now.</h2>
+  <p>Each works <strong>once</strong>, and they are the only way back in if you lose your phone. This is the only time they are shown — Shimline stores just their hashes and cannot show them again.</p>
+  <div class="recovery-grid">{% for code in codes %}<code>{{ code }}</code>{% endfor %}</div>
+  <p class="field-note">Print them, or put them in your password manager as a secure note — not on the same phone as the authenticator.</p>
+  <a class="button-primary" href="/admin/security">I've saved them {{ icon('arrow-right') }}</a>
+</section>
+
+{% elif secret %}
+<section class="form-surface">
+  <h2>Add Shimline to your authenticator.</h2>
+  <p>Open your authenticator app, choose "add account", then "enter a setup key manually", and type the key below. Account name can be anything — <code>Shimline</code> works.</p>
+  <div class="secret-box"><span>Setup key</span><code>{{ secret_display }}</code></div>
+  <p class="field-note">Type: time-based. 6 digits, 30 seconds, SHA-1 — every mainstream app uses these by default.</p>
+  <details class="uri-details"><summary>Or paste this otpauth link</summary><code class="uri">{{ provisioning_uri }}</code></details>
+  <form method="post" action="/admin/security/mfa/confirm" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <label>Enter the current 6-digit code to confirm
+      <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required autofocus placeholder="123456">
+    </label>
+    <button class="button-primary">Turn on two-factor {{ icon('arrow-right') }}</button>
+  </form>
+  <p class="field-note">Nothing changes until this code checks out, so a mistyped key cannot lock you out.</p>
+</section>
+
+{% elif status.enabled %}
+<div class="detail-grid">
+  <section>
+    <div class="section-title"><h3>Two-factor is on</h3></div>
+    <p class="muted-copy">Signing in needs your password and a code from your authenticator. You have <strong>{{ status.recovery_remaining }}</strong> unused recovery code{{ '' if status.recovery_remaining == 1 else 's' }}.</p>
+    {% if status.recovery_remaining <= 2 %}<p class="tone-overdue">That is low. Generate a fresh set before you run out.</p>{% endif %}
+
+    <div class="section-title timeline-title"><h3>Recent sign-in activity</h3><a href="/admin/audit">Full history</a></div>
+    <div class="timeline-list">{% for item in recent %}<div class="timeline-item">{{ icon('shield-check') }}<div><p>{{ item.summary }}</p><small>{{ item.action }} · {{ item.created_at|display_datetime }}</small></div></div>{% else %}<div class="empty-inline">No recent activity.</div>{% endfor %}</div>
+  </section>
+  <aside class="detail-aside">
+    <h3>Recovery codes</h3>
+    <p class="muted-copy">Generating a new set invalidates the old one immediately.</p>
+    <form method="post" action="/admin/security/recovery-codes" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button class="button-secondary">Generate new codes</button>
+    </form>
+    <h3>Turn off two-factor</h3>
+    <p class="muted-copy">Needs your password and a current code — the same two things an attacker would have to hold.</p>
+    <form method="post" action="/admin/security/mfa/disable" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+      <label>Authenticator code<input type="text" name="code" inputmode="numeric" maxlength="11" required></label>
+      <button class="button-secondary">Disable two-factor</button>
+    </form>
+  </aside>
+</div>
+
+{% else %}
+<section class="form-surface">
+  <h2>Turn on two-factor authentication.</h2>
+  <p>Right now a password is the only thing between anyone and every client's books, payment records, and uploaded documents. A second factor means a stolen or guessed password is not enough on its own.</p>
+  {% if crypto_ready %}
+  <form method="post" action="/admin/security/mfa/start" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <button class="button-primary">Set up two-factor {{ icon('arrow-right') }}</button>
+  </form>
+  {% else %}
+  <p class="tone-overdue">SHIMLINE_SECRET_KEY is not set on this server, so the authenticator secret could not be stored encrypted. See DEPLOY.md — setup is blocked rather than storing it in the clear.</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

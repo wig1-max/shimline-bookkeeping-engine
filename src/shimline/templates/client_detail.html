@@ -1,0 +1,193 @@
+{% extends "base.html" %}{% block title %}{{ organization.name }}{% endblock %}
+{% block content %}
+<header class="page-head detail-head">
+  <div>
+    <a class="back-link" href="/admin/clients">{{ icon('arrow-left') }} Clients</a>
+    <h1>{{ organization.name }}</h1>
+    <p>{{ [organization.city, organization.specialty]|select|join(' · ') or 'Client details' }}</p>
+  </div>
+  <span class="status-pill">{{ organization.lifecycle_stage }}</span>
+</header>
+
+{% if not readiness.ready %}
+<section class="verification readiness">
+  <div class="section-title">
+    <h3>Before this review can be complete</h3>
+    <span>{{ readiness.done }} of {{ readiness.total }} done{% if readiness.next_step() %} · next: {{ readiness.next_step().title|lower }}{% endif %}</span>
+  </div>
+  <div class="verify-list">
+    {% for step in readiness.steps %}
+    <div class="verify-item verify-{{ 'passed' if step.done else ('failed' if step.blocking else 'not_run') }}">
+      <span class="verify-state">{{ 'Done' if step.done else ('Blocking' if step.blocking else 'Outstanding') }}</span>
+      <div>
+        <strong>{{ step.title }}</strong>
+        <p>{{ step.detail }}</p>
+        {% if not step.done and step.action_path != request.url.path %}<p class="verify-action"><a href="{{ step.action_path }}">{{ step.action_label }}</a></p>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if not readiness.can_scan %}
+  <p class="batch-note">A scan run now would produce nothing. The blocking step above has to come first.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if request.query_params.get('qbo') == 'connected' %}
+<div class="banner-ok" role="status">{{ icon('circle-check') }} QuickBooks is connected. Shimline reads the books; any correction requires an explicit recorded approval and verified write-back.</div>
+{% endif %}
+
+<div class="detail-grid">
+  <section>
+    <div class="section-title"><h3>Engagements</h3></div>
+    <div class="data-list compact">
+      {% for item in engagements %}
+      <a class="data-row detail-row" href="/admin/engagements/{{ item.id }}">
+        <span><strong>{{ item.title }}</strong><small>{{ item.accounting_period or 'One-time review' }}</small></span>
+        <span class="status-pill status-{{ item.status }}">{{ item.status.replace('_',' ') }}</span>
+        <span>{{ item.due_at|display_date }}</span>{{ icon('chevron-right') }}
+      </a>
+      {% else %}<div class="empty-inline">No engagements yet.</div>{% endfor %}
+    </div>
+
+    <div class="section-title timeline-title"><h3>Payments</h3><span>Razorpay is the record of what was charged</span></div>
+    <div class="data-list">
+      {% for item in payments %}
+      <div class="data-row money-row">
+        <span><strong>{{ '%.2f'|format((item.amount or 0) / 100) }} {{ item.currency or 'CAD' }}</strong><small>{{ item.email or 'No email recorded' }}</small></span>
+        <span class="status-pill {% if item.status == 'paid' %}status-won{% endif %}">{{ item.status }}</span>
+        <span>{{ (item.paid_at or item.created_at)|display_date(true) }}</span>
+        <span class="reference">{{ item.payment_id or item.order_id }}</span>
+      </div>
+      {% else %}<div class="empty-inline">No payment recorded against this client.</div>{% endfor %}
+    </div>
+
+    <div class="section-title timeline-title"><h3>Source documents</h3><span>Deleted on the published schedule</span></div>
+    {% for item in submissions %}
+    <div class="submission-card">
+      <div class="submission-head">
+        <div><strong>Intake {{ item.id }}</strong><small>Received {{ item.created_at|display_date(true) }}</small></div>
+        {% if item.engagement_id %}<a class="text-link" href="/admin/engagements/{{ item.engagement_id }}">Open engagement {{ icon('arrow-right') }}</a>{% endif %}
+      </div>
+      {% for filename in item.files_list %}
+      <a class="file-link" href="/admin/files/{{ item.id }}/{{ filename }}">{{ icon('file-spreadsheet') }}<span>{{ filename }}</span>{{ icon('download') }}</a>
+      {% else %}<p class="muted-copy">Details submitted without attachments.</p>{% endfor %}
+      {% if item.retention %}
+      <p class="retention-line tone-{{ item.retention.tone }}">
+        {{ icon('shield-lock') }}
+        {% if item.retention.days_remaining > 0 %}Files delete in {{ item.retention.days_remaining }} days ({{ item.retention.deletes_at|display_date(true) }}) — {{ item.retention.basis }}.
+        {% else %}Files are past the retention window and are removed on the next purge run.{% endif %}
+      </p>
+      {% endif %}
+    </div>
+    {% else %}<div class="empty-inline">Nothing has been uploaded for this client.</div>{% endfor %}
+
+    <div class="section-title timeline-title"><h3>Activity</h3></div>
+    <div class="timeline-list">
+      {% for item in activities %}
+      <div class="timeline-item">
+        {{ icon('note' if item.kind == 'note' else 'activity') }}
+        <div><p>{{ item.body }}</p><small>{{ item.actor_name or 'Shimline' }} · {{ item.created_at|display_datetime }}</small></div>
+      </div>
+      {% else %}<div class="empty-inline">No activity recorded.</div>{% endfor %}
+    </div>
+
+    {% if audit %}
+    <div class="section-title timeline-title"><h3>Audit trail</h3><a href="/admin/audit">Full history</a></div>
+    <div class="timeline-list">
+      {% for item in audit %}
+      <div class="timeline-item">{{ icon('shield-check') }}<div><p>{{ item.summary or item.action }}</p><small>{{ item.actor_name or 'System' }} · {{ item.action }} · {{ item.created_at|display_datetime }}</small></div></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <aside class="detail-aside">
+    <h3>Relationship</h3>
+    <form method="post" action="/admin/clients/{{ organization.id }}/details" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <label>Stage
+        <select name="lifecycle_stage">
+          {% for value in lifecycle_stages %}<option value="{{ value }}" {% if organization.lifecycle_stage == value %}selected{% endif %}>{{ value.replace('_',' ')|title }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Owner
+        <select name="owner_user_id">
+          <option value="">Unassigned</option>
+          {% for user in users %}<option value="{{ user.id }}" {% if organization.owner_user_id == user.id %}selected{% endif %}>{{ user.display_name }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Next action<input name="next_action" value="{{ organization.next_action or '' }}" placeholder="What has to happen next"></label>
+      <label>Next action due<input type="date" name="next_action_due" value="{{ organization.next_action_due_at|form_date }}"></label>
+      <button class="button-secondary">Save relationship</button>
+    </form>
+
+    <h3>Pipeline</h3>
+    <form method="post" action="/admin/clients/{{ organization.id }}/opportunity" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <label>Stage
+        <select name="stage">
+          {% for value in opportunity_stages %}<option value="{{ value }}" {% if opportunity and opportunity.stage == value %}selected{% endif %}>{{ value.replace('_',' ')|title }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Sequence step<input name="sequence_step" value="{{ (opportunity.sequence_step if opportunity else '') or '' }}" placeholder="e.g. email 2"></label>
+      <label>Next follow-up<input type="date" name="next_follow_up" value="{{ (opportunity.next_follow_up_at if opportunity else '')|form_date }}"></label>
+      <label><input type="checkbox" name="do_not_contact" value="1" {% if opportunity and opportunity.do_not_contact %}checked{% endif %}> Do not contact</label>
+      <button class="button-secondary">Save pipeline</button>
+    </form>
+
+    <h3>Client account</h3>
+    {% if client_account %}
+    <div class="kv"><span>Email</span><code>{{ client_account.email }}</code></div>
+    <div class="kv"><span>Last seen</span><span>{{ client_account.last_seen_at|display_date(true) if client_account.last_seen_at else 'Never signed in' }}</span></div>
+    {% if request.query_params.get('link') %}
+    <p class="field-note">Fresh access link — paste it into your reply. It works once and expires in 14 days.</p>
+    <div class="secret-box"><span>Portal link</span><code>{{ portal_base }}/portal/enter?t={{ request.query_params.get('link') }}</code></div>
+    {% endif %}
+    <form method="post" action="/admin/clients/{{ organization.id }}/client-link" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button class="button-secondary">Issue a new access link</button>
+    </form>
+    {% else %}
+    <p class="muted-copy">No client account yet. One is created automatically when a payment is verified.</p>
+    {% endif %}
+
+    <h3>QuickBooks</h3>
+    {% if connection and connection.status == 'active' %}
+    <p class="muted-copy">Connected{% if connection.environment == 'sandbox' %} <strong>(sandbox)</strong>{% endif %} — controlled accounting access.</p>
+    <div class="kv"><span>Company</span><code>{{ connection.realm_id }}</code></div>
+    <div class="kv"><span>Connected</span><span>{{ connection.created_at|display_date(true) }}</span></div>
+    <form method="post" action="/admin/clients/{{ organization.id }}/qbo-disconnect" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="connection_id" value="{{ connection.id }}">
+      <button class="button-secondary">Disconnect QuickBooks</button>
+    </form>
+    {% elif connection %}
+    <p class="muted-copy">{{ connection.status|capitalize }}{% if connection.status_detail %} — {{ connection.status_detail }}{% endif %}.</p>
+    {% if qbo_ready %}<form method="post" action="/admin/clients/{{ organization.id }}/qbo-connect" class="stack-form compact-form"><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><button class="button-secondary">Reconnect QuickBooks</button></form>{% endif %}
+    {% elif qbo_ready %}
+    <p class="muted-copy">Not connected. Shimline requests accounting access for evidence-backed cleanup; no change is written without approval.</p>
+    <form method="post" action="/admin/clients/{{ organization.id }}/qbo-connect" class="stack-form compact-form"><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><button class="button-secondary">Connect QuickBooks</button></form>
+    {% else %}
+    <p class="muted-copy">QuickBooks is not configured on this server yet. Reviews run on exports in the meantime.</p>
+    {% endif %}
+
+    <h3>Contacts</h3>
+    {% for contact in contacts %}
+    <div class="contact">
+      <strong>{{ contact.name or 'Primary contact' }}{% if contact.title %} · {{ contact.title }}{% endif %}</strong>
+      {% if contact.email %}<a href="mailto:{{ contact.email }}">{{ contact.email }}</a>{% endif %}
+      {% if contact.phone %}<span>{{ contact.phone }}</span>{% endif %}
+      {% if contact.source_url %}<a href="{{ contact.source_url }}" rel="noreferrer">Contact source</a>{% endif %}
+    </div>
+    {% else %}<p class="muted-copy">No contact yet.</p>{% endfor %}
+
+    <h3>Add note</h3>
+    <form method="post" action="/admin/clients/{{ organization.id }}/note" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <textarea name="body" rows="4" required placeholder="Record a call, decision, or context…"></textarea>
+      <button class="button-secondary">Add note</button>
+    </form>
+  </aside>
+</div>
+{% endblock %}

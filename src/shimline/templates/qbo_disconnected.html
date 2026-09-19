@@ -1,0 +1,15 @@
+{% extends "qbo_base.html" %}{% block title %}Disconnected{% endblock %}
+{% block content %}
+<span class="status status-warn">Disconnected</span>
+<h1>Shimline no longer has access to that QuickBooks company.</h1>
+{% if recorded %}
+<p>We have removed the stored credentials at our end. Nothing further is read from those books.</p>
+{% else %}
+<p>Your QuickBooks company has ended the connection. Any credentials we still hold stop working immediately, and are cleared the next time they are used.</p>
+{% endif %}
+<p>Documents you already sent us are kept and then deleted on the published schedule — disconnecting does not delete work already delivered, and does not cancel an engagement in progress.</p>
+<div class="actions">
+  <a class="button" href="https://shimline.ca">Return to shimline.ca →</a>
+  <a class="text-link" href="mailto:hello@shimline.ca">Questions? hello@shimline.ca</a>
+</div>
+{% endblock %}

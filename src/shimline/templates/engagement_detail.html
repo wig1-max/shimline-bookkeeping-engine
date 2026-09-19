@@ -1,0 +1,147 @@
+{% extends "base.html" %}{% block title %}{{ engagement.organization_name }} — {{ engagement.title }}{% endblock %}
+{% block content %}
+<header class="page-head detail-head">
+  <div>
+    <a class="back-link" href="/admin/work">{{ icon('arrow-left') }} Work</a>
+    <h1>{{ engagement.organization_name }}</h1>
+    <p>{{ engagement.accounting_period or '' }} {{ engagement.title }}</p>
+  </div>
+  <span class="status-pill status-{{ engagement.status }}">{{ engagement.status.replace('_',' ') }}</span>
+</header>
+
+<div class="engagement-grid">
+  <section>
+    <div class="engagement-summary">
+      <div>
+        <span>Due</span>
+        <strong class="tone-{{ engagement.due_tone }}">{{ engagement.due_at|display_date if engagement.due_at else 'Starts when ready' }}</strong>
+        <small>{{ engagement.due_label }}</small>
+      </div>
+      <div><span>Owner</span><strong>{{ engagement.owner_name or 'Unassigned' }}</strong><small>{% if engagement.turnaround_days is defined %}Delivered in {{ engagement.turnaround_days }} business days{% else %}&nbsp;{% endif %}</small></div>
+      <div><span>Priority reason</span><strong>{{ engagement.priority_reason or 'No risk recorded' }}</strong></div>
+    </div>
+
+    <div class="section-title"><h3>Review checklist</h3><span>{{ items|selectattr('status','equalto','done')|list|length }} of {{ items|length }} complete</span></div>
+    <div class="checklist">
+      {% for item in items %}
+      <form method="post" action="/admin/work-items/{{ item.id }}/status" class="check-row">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <button name="status" value="{{ 'todo' if item.status == 'done' else 'done' }}" class="check-button {% if item.status == 'done' %}is-done{% endif %}" aria-label="Toggle {{ item.title }}">{{ icon('circle-check' if item.status == 'done' else 'circle') }}</button>
+        <span class="{% if item.status == 'done' %}done{% endif %}">{{ item.title }}</span>
+        <select name="status" onchange="this.form.submit()">
+          {% for value in work_item_statuses %}<option value="{{ value }}" {% if item.status == value %}selected{% endif %}>{{ value.replace('_',' ') }}</option>{% endfor %}
+        </select>
+      </form>
+      {% else %}<div class="empty-inline">This engagement has no checklist steps.</div>{% endfor %}
+    </div>
+
+    <div class="section-title timeline-title"><h3>Activity</h3></div>
+    <div class="timeline-list">
+      {% for item in activities %}
+      <div class="timeline-item">{{ icon('activity') }}<div><p>{{ item.body }}</p><small>{{ item.actor_name or 'Shimline' }} · {{ item.created_at|display_datetime }}</small></div></div>
+      {% else %}<div class="empty-inline">No activity yet.</div>{% endfor %}
+    </div>
+
+    {% if audit %}
+    <div class="section-title timeline-title"><h3>Audit trail</h3><a href="/admin/audit">Full history</a></div>
+    <div class="timeline-list">
+      {% for item in audit %}
+      <div class="timeline-item">{{ icon('shield-check') }}<div><p>{{ item.summary or item.action }}</p><small>{{ item.actor_name or 'System' }} · {{ item.action }} · {{ item.created_at|display_datetime }}</small></div></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <aside class="detail-aside">
+    <h3>Move engagement</h3>
+    <form method="post" action="/admin/engagements/{{ engagement.id }}/status" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <select name="status">
+        {% for value in statuses %}<option value="{{ value }}" {% if engagement.status == value %}selected{% endif %}>{{ value.replace('_',' ')|title }}</option>{% endfor %}
+      </select>
+      <p class="field-note">{% if engagement.ready_at %}The five-business-day clock started {{ engagement.ready_at|display_date(true) }}.{% else %}Moving past “awaiting client” starts the five-business-day clock.{% endif %}</p>
+      <button class="button-primary">Update status</button>
+    </form>
+
+    <h3>Ownership</h3>
+    <form method="post" action="/admin/engagements/{{ engagement.id }}/assign" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <label>Assigned to
+        <select name="assigned_user_id">
+          <option value="">Unassigned</option>
+          {% for user in users %}<option value="{{ user.id }}" {% if engagement.assigned_user_id == user.id %}selected{% endif %}>{{ user.display_name }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Priority reason<textarea name="priority_reason" rows="3" placeholder="Why this needs attention before other work">{{ engagement.priority_reason or '' }}</textarea></label>
+      <button class="button-secondary">Save ownership</button>
+    </form>
+
+    <h3>QuickBooks reports</h3>
+    {% if qbo_connection and qbo_connection.status == 'active' %}
+      {% if latest_pull %}
+      <div class="kv"><span>Last pull</span><span class="tone-{{ 'good' if latest_pull.status == 'complete' else 'overdue' }}">{{ latest_pull.reports_stored }}/{{ latest_pull.reports_requested }} reports</span></div>
+      <div class="kv"><span>Period</span><span>{{ latest_pull.period_start }} → {{ latest_pull.period_end }}</span></div>
+      {% if latest_pull.detail %}<p class="field-note tone-overdue">{{ latest_pull.detail }}</p>{% endif %}
+      {% for snap in report_snapshots %}
+      <a class="file-link" href="/admin/snapshots/{{ snap.id }}" title="{{ snap.why }}">{{ icon('document') }}<span>{{ snap.label }}</span>{{ icon('download') }}</a>
+      {% endfor %}
+      {% else %}
+      <p class="muted-copy">Nothing pulled yet. The client is connected, so there is no need to ask them for exports.</p>
+      {% endif %}
+    <form method="post" action="/admin/engagements/{{ engagement.id }}/pull-reports" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button class="button-secondary">{{ 'Pull again' if latest_pull else 'Pull reports from QuickBooks' }}</button>
+    </form>
+    <p class="field-note">Read-only. Pulling never changes anything in the client's books.</p>
+
+    <h3>Free Cleanup Check</h3>
+    {% if bookkeeping_run %}
+    <div class="kv"><span>Latest engine run</span><span>{{ bookkeeping_run.status }}</span></div>
+    <div class="kv"><span>Period</span><span>{{ bookkeeping_run.period_start }} → {{ bookkeeping_run.period_end }}</span></div>
+    <a class="button-secondary engine-open" href="/admin/bookkeeping/{{ bookkeeping_run.id }}">Open accountant review</a>
+    {% endif %}
+    <form method="post" action="/admin/engagements/{{ engagement.id }}/bookkeeping-scan" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button class="button-secondary">{{ 'Run cleanup check again' if bookkeeping_run else 'Run Free Cleanup Check' }}</button>
+    </form>
+    <p class="field-note">Reconstructs source entries and proposes evidence-backed corrections. Nothing writes until an operator approves and executes a proposal.</p>
+    {% else %}
+    <p class="muted-copy">QuickBooks is not connected for this client, so the review runs on uploaded exports.</p>
+    {% endif %}
+
+    <h3>Customer QuickBooks exports</h3>
+    <form method="post" action="/admin/engagements/{{ engagement.id }}/import-qbo-exports"
+          enctype="multipart/form-data" class="stack-form compact-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <label>Transaction Detail by Account CSV
+        <input type="file" name="transaction_detail_file" accept=".csv,text/csv" required>
+      </label>
+      <label>Accounts Receivable Aging Detail CSV
+        <input type="file" name="ar_aging_file" accept=".csv,text/csv" required>
+      </label>
+      <button class="button-secondary">Import exports and open review</button>
+    </form>
+    <p class="field-note">Use the detailed CSV exports, not Profit &amp; Loss summaries. Files are parsed in memory and this action retains only normalized review records.</p>
+
+    <h3>Submitted files</h3>
+    {% for filename in engagement.files_list %}
+    <a class="file-link" href="/admin/files/{{ engagement.submission_id }}/{{ filename }}">{{ icon('file-spreadsheet') }}<span>{{ filename }}</span>{{ icon('download') }}</a>
+    {% else %}<p class="muted-copy">No files attached. Follow up for documents sent separately.</p>{% endfor %}
+
+    <div class="retention-note">
+      {{ icon('shield-lock') }}
+      <div>
+        <strong>Document retention</strong>
+        {% if retention %}
+        <p class="tone-{{ retention.tone }}">{% if retention.days_remaining > 0 %}Files delete in {{ retention.days_remaining }} days, on {{ retention.deletes_at|display_date(true) }}.{% else %}Past the retention window; files are removed on the next purge run.{% endif %}</p>
+        <p>{{ retention.basis|capitalize }}. Closing this engagement is what starts the {{ retention_after_close }}-day clock.</p>
+        {% else %}
+        <p>Source files delete {{ retention_after_close }} days after closure, or after {{ retention_unclosed }} days if work never begins.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <a class="text-link" href="/admin/clients/{{ engagement.organization_id }}">Open full client history {{ icon('arrow-right') }}</a>
+  </aside>
+</div>
+{% endblock %}

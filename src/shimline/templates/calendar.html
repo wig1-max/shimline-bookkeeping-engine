@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Calendar{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>Calendar</h1><p>Service promises and operating deadlines.</p></div></header>
+<div class="calendar-list">{% for day,items in groups %}<section><div class="calendar-day"><strong>{{ day }}</strong></div><div>{% for item in items %}<a class="queue-row" href="/admin/engagements/{{ item.id }}"><span><strong>{{ item.organization_name }}</strong><small>{{ item.title }}</small></span><span class="status-pill status-{{ item.status }}">{{ item.status.replace('_',' ') }}</span>{{ icon('chevron-right') }}</a>{% endfor %}</div></section>{% else %}<div class="empty-state">{{ icon('calendar') }}<h2>No dated work yet.</h2><p>Deadlines appear after an engagement is marked ready.</p></div>{% endfor %}</div>
+{% endblock %}

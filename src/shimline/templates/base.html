@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>{% block title %}Shimline{% endblock %} — Operations</title>
+  <link rel="icon" href="/favicon.svg?v={{ static_version }}" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico?v={{ static_version }}" sizes="32x32">
+  <link rel="stylesheet" href="/fonts/fonts.css?v={{ static_version }}">
+  <link rel="stylesheet" href="/admin/static/admin.css?v={{ static_version }}">
+</head>
+<body>
+  {{ icon_sprite() }}
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/admin" aria-label="Shimline home">Shimline<span>.</span></a>
+      <nav class="primary-nav" aria-label="Workspace">
+        <a href="/admin" class="{% if active == 'today' %}active{% endif %}">{{ icon('sun') }}<span>Today</span></a>
+        <a href="/admin/portfolio" class="{% if active == 'portfolio' %}active{% endif %}">{{ icon('stack-2') }}<span>Portfolio</span></a>
+        <a href="/admin/pipeline" class="{% if active == 'pipeline' %}active{% endif %}">{{ icon('stack-2') }}<span>Pipeline</span></a>
+        {% if 'owner' in session.roles %}<a href="/admin/measurement" class="{% if active == 'measurement' %}active{% endif %}">{{ icon('history') }}<span>Measurement</span></a>{% endif %}
+        <a href="/admin/clients" class="{% if active == 'clients' %}active{% endif %}">{{ icon('users') }}<span>Clients</span></a>
+        <a href="/admin/work" class="{% if active == 'work' %}active{% endif %}">{{ icon('briefcase') }}<span>Work</span></a>
+        <a href="/admin/calendar" class="{% if active == 'calendar' %}active{% endif %}">{{ icon('calendar') }}<span>Calendar</span></a>
+        <a href="/admin/audit" class="{% if active == 'audit' %}active{% endif %}">{{ icon('history') }}<span>History</span></a>
+      </nav>
+      <div class="account">
+        <div class="avatar avatar-sm">{{ session.display_name[:1]|upper }}</div>
+        <div class="account-copy"><strong>{{ session.display_name }}</strong><span>{{ session.workspace_label or 'Shimline operations' }}</span></div>
+        <a class="icon-button" href="/admin/security" title="Security" aria-label="Security">{{ icon('shield-lock') }}</a>
+        <form method="post" action="/admin/logout">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+          <button class="icon-button" title="Sign out" aria-label="Sign out">{{ icon('logout') }}</button>
+        </form>
+      </div>
+    </aside>
+    <main class="workspace">
+      <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">{{ icon('menu-2') }}</button>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script src="/admin/static/vendor/htmx-4.0.0.min.js?v={{ static_version }}" defer></script>
+  <script src="/admin/static/admin.js?v={{ static_version }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

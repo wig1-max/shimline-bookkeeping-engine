@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block title %}History{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>History</h1><p>Every status change, assignment, retention decision, and document download.</p></div></header>
+<form class="filter-bar" method="get">
+  <select name="action" onchange="this.form.submit()">
+    <option value="">All actions</option>
+    {% for value in actions %}<option value="{{ value }}" {% if action == value %}selected{% endif %}>{{ value }}</option>{% endfor %}
+  </select>
+  <button class="button-secondary">Filter</button>
+</form>
+<div class="data-list">
+  <div class="data-head audit-head"><span>When</span><span>Who</span><span>Action</span><span>What changed</span></div>
+  {% for row in rows %}
+  <div class="data-row audit-row">
+    <span class="queue-when">{{ row.created_at|display_datetime }}</span>
+    <span>{{ row.actor_name or 'System' }}</span>
+    <span><span class="status-pill literal">{{ row.action }}</span></span>
+    <span><strong>{{ row.summary or '—' }}</strong><small>{{ row.entity_type }} {{ row.entity_id or '' }}</small></span>
+  </div>
+  {% else %}<div class="empty-inline">No recorded activity yet.</div>{% endfor %}
+</div>
+{% with query = 'action=' ~ action ~ '&' %}{% include "_pager.html" %}{% endwith %}
+{% endblock %}

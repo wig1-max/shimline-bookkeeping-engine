@@ -1,0 +1,31 @@
+{% extends "portal_base.html" %}{% block title %}QuickBooks — Shimline{% endblock %}
+{% block content %}
+{% if request.query_params.get('connected') %}<span class="status status-ok">Connected</span>{% endif %}
+<h1>{% if connected %}QuickBooks is connected.{% else %}Connect QuickBooks to Shimline.{% endif %}</h1>
+
+{% if connected %}
+<p>We can read the records needed for your review. Any correction must be evidence-backed, explicitly approved, and verified after it is written; Shimline does not delete entries.</p>
+<p>You can end this at any time, here or from <strong>Settings → Apps</strong> inside QuickBooks. Disconnecting does not cancel work already in progress.</p>
+<form method="post" action="/portal/quickbooks/disconnect" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ session_csrf }}">
+  <button class="button-quiet">Disconnect QuickBooks</button>
+</form>
+{% elif qbo_ready %}
+<p>You will be sent to Intuit to approve the connection. We ask for one permission only: <strong>accounting</strong>, used to inspect the books and apply only explicitly approved corrections.</p>
+<ul class="plain">
+  <li>We can read your reports — profit &amp; loss, balance sheet, ageing.</li>
+  <li>We never make a silent change or delete an entry.</li>
+  <li>We never see your QuickBooks password.</li>
+  <li>You can disconnect whenever you like.</li>
+</ul>
+<form method="post" action="/portal/quickbooks/connect" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ session_csrf }}">
+  <button class="button">Continue to QuickBooks →</button>
+</form>
+{% else %}
+<p class="muted">QuickBooks connection is not switched on yet. Please email your exports to <a class="text-link" href="mailto:hello@shimline.ca">hello@shimline.ca</a> and we will take it from there.</p>
+{% endif %}
+
+{% if environment == 'sandbox' %}<div class="sandbox-flag">This installation is pointed at Intuit's <strong>sandbox</strong>. It cannot reach live company data.</div>{% endif %}
+<div class="actions"><a class="text-link" href="/portal">← Back</a></div>
+{% endblock %}

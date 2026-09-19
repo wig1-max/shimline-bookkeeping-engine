@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Pipeline{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>Pipeline</h1><p>Prospects, follow-ups, and paid-review conversion.</p></div><a class="button-secondary" href="/admin/imports/leads">{{ icon('file-import') }} Import leads</a></header>
+<form class="filter-bar" method="get" action="/admin/pipeline" hx-get="/admin/pipeline" hx-target="#pipeline-results" hx-push-url="true" hx-trigger="submit, input changed delay:300ms from:input, change from:select"><label class="search">{{ icon('search') }}<input name="q" value="{{ q }}" placeholder="Search company, city, or specialty"></label><select name="stage" aria-label="Filter pipeline by stage"><option value="">All stages</option>{% for s in vocab.opportunity %}<option value="{{ s.code }}" {% if stage==s.code %}selected{% endif %}>{{ s.label }}</option>{% endfor %}</select><button class="button-secondary">Filter</button></form>
+<div id="pipeline-results" aria-live="polite" hx-boost="true" hx-target="#pipeline-results" hx-push-url="true">
+  {% include "_pipeline_results.html" %}
+</div>
+{% endblock %}

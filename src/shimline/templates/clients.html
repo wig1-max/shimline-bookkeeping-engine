@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Clients{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>Clients</h1><p>One record for every relationship and engagement.</p></div></header>
+<form class="filter-bar" method="get"><label class="search">{{ icon('search') }}<input name="q" value="{{ q }}" placeholder="Search clients"></label><button class="button-secondary">Search</button></form>
+<div class="data-list">
+  <div class="data-head clients-head"><span>Client</span><span>Relationship</span><span>Health</span><span>Next action</span><span>Next due</span><span></span></div>
+  {% for row in rows %}<a class="data-row clients-row" href="/admin/clients/{{ row.id }}"><span><strong>{{ row.name }}</strong><small>{{ row.city or 'Location not set' }}</small></span><span>{{ row.lifecycle_stage }}</span><span><span class="health health-{{ row.health }}">{{ row.health }}</span></span><span>{{ row.next_action or 'No action set' }}</span><span>{{ row.next_due|display_date }}</span>{{ icon('chevron-right') }}</a>{% else %}<div class="empty-inline">No clients match this search.</div>{% endfor %}
+</div>
+{% with query = "q=" ~ q|urlencode ~ "&" %}{% include "_pager.html" %}{% endwith %}
+{% endblock %}

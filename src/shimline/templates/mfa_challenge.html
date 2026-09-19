@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Two-factor — Shimline</title>
+  <link rel="icon" href="/favicon.svg?v={{ static_version }}" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico?v={{ static_version }}" sizes="32x32">
+  <link rel="stylesheet" href="/fonts/fonts.css?v={{ static_version }}">
+  <link rel="stylesheet" href="/admin/static/admin.css?v={{ static_version }}">
+</head>
+<body class="login-page">
+  {{ icon_sprite() }}
+  <main class="login-panel">
+    <a class="brand" href="https://shimline.ca">Shimline<span>.</span></a>
+    <p class="eyebrow">TWO-FACTOR</p>
+    <h1>One more step.</h1>
+    <p class="lede">Enter the 6-digit code from your authenticator for {{ email }}.</p>
+    {% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/admin/mfa" class="stack-form">
+      <label>Authentication code
+        <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code"
+               pattern="[0-9A-Za-z\-]*" maxlength="11" required autofocus placeholder="123456">
+      </label>
+      <button class="button-primary" type="submit">Verify {{ icon('arrow-right') }}</button>
+    </form>
+    <p class="field-note">Lost your phone? Enter one of your recovery codes instead — each works once.</p>
+  </main>
+</body>
+</html>

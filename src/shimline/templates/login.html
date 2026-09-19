@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Sign in — Shimline</title>
+  <link rel="icon" href="/favicon.svg?v={{ static_version }}" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico?v={{ static_version }}" sizes="32x32">
+  <link rel="stylesheet" href="/fonts/fonts.css?v={{ static_version }}">
+  <link rel="stylesheet" href="/admin/static/admin.css?v={{ static_version }}">
+</head>
+<body class="login-page">
+  {{ icon_sprite() }}
+  <main class="login-panel">
+    <a class="brand" href="https://shimline.ca">Shimline<span>.</span></a>
+    <p class="eyebrow">OPERATIONS</p>
+    <h1>Welcome back.</h1>
+    <p class="lede">Sign in to see what needs attention today.</p>
+    {% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/admin/login" class="stack-form">
+      <input type="hidden" name="next" value="{{ next }}">
+      <label>Email<input type="email" name="email" autocomplete="username" required autofocus></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+      <button class="button-primary" type="submit">Sign in {{ icon('arrow-right') }}</button>
+    </form>
+  </main>
+</body>
+</html>

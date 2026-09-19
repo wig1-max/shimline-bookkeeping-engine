@@ -1,0 +1,48 @@
+{% extends "portal_base.html" %}{% block title %}Your review — Shimline{% endblock %}
+{% block content %}
+<h1>{% if connected %}We have what we need.{% else %}Two ways to send us your numbers.{% endif %}</h1>
+{% if client.organization_name %}<p class="muted">For <strong>{{ client.organization_name }}</strong>.</p>{% endif %}
+
+{% if connected %}
+<span class="status status-ok">QuickBooks connected</span>
+<p>Shimline can read the reports it needs directly. There is nothing for you to export or upload — we will email you when your review is ready.</p>
+<div class="actions">
+  <a class="button" href="/portal/quickbooks">Manage the connection →</a>
+</div>
+{% else %}
+<p>Pick whichever is easier. Connecting is faster and means no exporting, but uploading works just as well.</p>
+
+<div class="choice">
+  <h2>Connect QuickBooks</h2>
+  <p>You approve accounting access in QuickBooks and we pull the records ourselves. Corrections are evidence-backed, explicitly reviewed, and never written silently; you can disconnect at any time.</p>
+  {% if qbo_ready %}<a class="button" href="/portal/quickbooks">Connect QuickBooks →</a>
+  {% else %}<p class="muted">Not available just yet — please use the upload option below.</p>{% endif %}
+</div>
+
+<div class="choice">
+  <h2>Send the exports yourself</h2>
+  <p>Export the profit &amp; loss, balance sheet, and A/R and A/P ageing from QuickBooks and email them to us. We will confirm as soon as they arrive.</p>
+  <a class="button-quiet" href="mailto:hello@shimline.ca?subject=My%20QuickBooks%20exports">Email your exports →</a>
+</div>
+{% endif %}
+
+{% if engagement and engagement.professional_disclosed_at %}
+<div class="choice">
+  <h2>Who is doing your books</h2>
+  <p>Your work is with Shimline. <strong>{{ engagement.professional_name }}</strong>
+     of <strong>{{ engagement.professional_firm_name }}</strong> is the
+     professional of record for it, named here since
+     {{ engagement.professional_disclosed_at[:10] }}. You do not need to contact
+     them separately — everything reaches them through us.</p>
+</div>
+{% endif %}
+
+{% if submissions %}
+<div class="detail">
+  <div><span class="label">Documents received</span><span class="value">{{ submissions|length }}</span></div>
+  {% for item in submissions %}{% for f in item.files_list %}<div><span class="label">{{ f }}</span><span class="value">{{ item.created_at[:10] }}</span></div>{% endfor %}{% endfor %}
+</div>
+{% endif %}
+
+<form method="post" action="/portal/leave" class="sign-out"><button class="text-link">Sign out of this device</button></form>
+{% endblock %}

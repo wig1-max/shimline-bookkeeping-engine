@@ -1,0 +1,11 @@
+{% extends "qbo_base.html" %}{% block title %}Connection not completed{% endblock %}
+{% block content %}
+<span class="status status-warn">Not connected</span>
+<h1>That QuickBooks connection didn't complete.</h1>
+<p>{{ reason }}</p>
+<p>Nothing was changed and no access was granted. Starting again from the client's page in Shimline will issue a fresh connection link.</p>
+<div class="actions">
+  <a class="button" href="/admin/clients">Back to clients →</a>
+  <a class="text-link" href="mailto:hello@shimline.ca">hello@shimline.ca</a>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% if paging.pages > 1 or paging.total > paging.per_page %}
+<nav class="pager" aria-label="Pagination">
+  <span>{{ paging.first }}–{{ paging.last }} of {{ paging.total }}</span>
+  <span class="pager-links">
+    {% if paging.has_prev %}<a href="?{{ query }}page={{ paging.page - 1 }}">{{ icon('chevron-left') }} Previous</a>{% else %}<span class="disabled">{{ icon('chevron-left') }} Previous</span>{% endif %}
+    <span class="pager-page">Page {{ paging.page }} of {{ paging.pages }}</span>
+    {% if paging.has_next %}<a href="?{{ query }}page={{ paging.page + 1 }}">Next {{ icon('chevron-right') }}</a>{% else %}<span class="disabled">Next {{ icon('chevron-right') }}</span>{% endif %}
+  </span>
+</nav>
+{% endif %}

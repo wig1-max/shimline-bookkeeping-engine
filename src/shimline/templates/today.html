@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Today{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div><h1>Today</h1><p>{{ today.strftime('%A, %B %d, %Y').replace(' 0',' ') }}</p></div>
+  <div class="quiet-stats"><span><b>{{ summary.overdue }}</b> overdue</span><span><b>{{ summary.waiting }}</b> waiting</span></div>
+</header>
+
+<section class="risk-overview" aria-labelledby="risk-overview-title">
+  <div>
+    <p class="eyebrow">WORKLOAD SIGNALS</p>
+    <h2 id="risk-overview-title">Current service risk</h2>
+    <table class="summary-table">
+      <thead><tr><th>Signal</th><th>Count</th></tr></thead>
+      <tbody>
+        <tr><td>Overdue</td><td>{{ summary.overdue }}</td></tr>
+        <tr><td>Due soon</td><td>{{ summary.due_soon }}</td></tr>
+        <tr><td>Waiting on client</td><td>{{ summary.waiting }}</td></tr>
+        <tr><td>Internal review</td><td>{{ summary.review }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="risk-chart"><canvas id="serviceRiskChart" aria-hidden="true" data-values="{{ summary.overdue }},{{ summary.due_soon }},{{ summary.waiting }},{{ summary.review }}"></canvas></div>
+</section>
+
+{% if selected %}
+<div class="focus-layout">
+  <section class="focus-main">
+    <article class="priority-hero">
+      <p class="eyebrow">PRIORITY</p>
+      <h2>{{ selected.organization_name }}</h2>
+      <p class="engagement-name">{{ selected.accounting_period or '' }} {{ selected.title }}</p>
+      <p class="due-line">{% if selected.due_at %}Due <strong>{{ selected.due_at|display_date }}</strong> <span class="tone-{{ selected.due_tone }}">({{ selected.due_label }})</span>{% else %}SLA starts when documents are complete{% endif %}</p>
+      <div class="risk-reason">{{ icon('warning') }}<div><span>{{ selected.priority_reason }}</span>
+        {% if selected.priority_reasons|length > 1 %}<small class="why">Also: {{ selected.priority_reasons[1:]|join(' · ') }}</small>{% endif %}</div></div>
+      <div class="progress-track" aria-label="Engagement progress">
+        {% for s in vocab.engagement.path() %}
+        <div class="progress-stage {% if selected.status == s.code %}current{% elif s.position < selected.stage_position %}complete{% endif %}">
+          <span>{% if s.position < selected.stage_position %}{{ icon('check') }}{% else %}{{ loop.index }}{% endif %}</span><small>{{ s.label }}</small>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="hero-actions">
+        <a class="button-primary" href="/admin/engagements/{{ selected.id }}">{% if selected.status == 'awaiting_client' %}Review requirements{% else %}Continue review{% endif %} {{ icon('arrow-right') }}</a>
+        <a class="text-link" href="/admin/clients/{{ selected.organization_id }}">Open client {{ icon('chevron-right') }}</a>
+      </div>
+    </article>
+
+    <section class="up-next">
+      <div class="section-title"><h3>Up next</h3><a href="/admin/work">View all work</a></div>
+      {% for item in queue %}
+      <a class="queue-row" href="/admin/engagements/{{ item.id }}">
+        <span class="queue-when">{{ item.due_at|display_date if item.due_at else 'Unscheduled' }}</span>
+        <span><strong>{{ item.organization_name }}</strong><small>{{ item.accounting_period or '' }} {{ item.title }}</small></span>
+        <span class="tone-{{ item.due_tone }}">{{ item.due_label }}</span>{{ icon('chevron-right') }}
+      </a>
+      {% else %}<div class="empty-inline">No other active work. New paid reviews will appear here automatically.</div>{% endfor %}
+    </section>
+  </section>
+
+  <aside class="blocker-rail">
+    <h3>Client blockers</h3>
+    {% for item in blockers %}
+    <article class="blocker">
+      <div class="blocker-title">{{ icon('file-alert') }}<div><strong>{{ item.organization_name }}</strong><span>{{ item.accounting_period or item.title }}</span></div></div>
+      <p>{{ item.priority_reason or (item.next_item.title if item.next_item else 'Waiting for client information') }}</p>
+      <a href="/admin/engagements/{{ item.id }}">Review request {{ icon('arrow-right') }}</a>
+    </article>
+    {% else %}<p class="muted-copy">Nothing is waiting on a client.</p>{% endfor %}
+  </aside>
+</div>
+{% else %}
+<section class="empty-state">{{ icon('sun') }}<h2>Your desk is clear.</h2><p>Paid reviews and recurring client work will appear here with their next action.</p><a class="button-primary" href="/admin/pipeline">Open pipeline {{ icon('arrow-right') }}</a></section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="/admin/static/vendor/chart-4.5.1.umd.js?v={{ static_version }}" defer></script>
+<script src="/admin/static/dashboard-charts.js?v={{ static_version }}" defer></script>
+{% endblock %}

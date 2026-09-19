@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+{# WeasyPrint maps these to the PDF document information dictionary. Without a
+   title a reader falls back to the filename, which is what a browser tab shows
+   when someone opens the report from a link. #}
+<title>Cash-Leak Review &mdash; {{ company.name }}{% if is_sample %} (synthetic sample){% endif %}</title>
+<meta name="author" content="Shimline">
+<meta name="description" content="{% if is_sample %}A complete Cash-Leak Review built from a fictional company and synthetic data.{% else %}Confidential Cash-Leak Review prepared for {{ company.name }} by Shimline.{% endif %}">
+<meta name="generator" content="Shimline">
+<style>
+  @page {
+    size: Letter;
+    margin: 0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'DejaVu Sans', Arial, sans-serif;
+    margin: 0;
+    color: #1F2937;
+    font-size: 10.5pt;
+  }
+  .page {
+    width: 8.5in;
+    height: 11in;
+    padding: 0.55in 0.65in;
+    page-break-after: always;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+  .label {
+    display: inline-block;
+    background: #FEF3C7;
+    color: #92400E;
+    font-size: 8pt;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .brand { color: #C2410C; font-weight: 800; letter-spacing: -0.01em; }
+  h1 { font-size: 24pt; margin: 6px 0 2px; color: #1F2937; }
+  h2 { font-size: 15pt; margin: 0 0 14px; color: #1F2937; border-bottom: 2px solid #E5E7EB; padding-bottom: 8px; }
+  .muted { color: #6B7280; }
+  .footer {
+    position: absolute; bottom: 0.4in; left: 0.65in; right: 0.65in;
+    font-size: 7.5pt; color: #9CA3AF; border-top: 1px solid #E5E7EB; padding-top: 6px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  th { background: #1F2937; color: white; text-align: left; padding: 8px 10px; font-size: 9pt; }
+  td { padding: 8px 10px; font-size: 9.5pt; border-bottom: 1px solid #E5E7EB; }
+  tr:nth-child(even) td { background: #F9FAFB; }
+  .priority-critical { color: #B91C1C; font-weight: bold; }
+  .priority-high { color: #C2410C; font-weight: bold; }
+  .priority-review { color: #D97706; font-weight: bold; }
+
+  /* PAGE 1 */
+  .cover-hero { margin-top: 0.5in; }
+  .big-number {
+    font-size: 58pt; font-weight: 800; color: #B91C1C; line-height: 1;
+    margin: 0.35in 0 0.05in;
+  }
+  .big-number-caption { font-size: 12pt; color: #374151; margin-bottom: 0.4in; }
+  .stat-row { display: flex; gap: 0.3in; margin-top: 0.25in; }
+  .stat-box {
+    flex: 1; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat-box .num { font-size: 22pt; font-weight: 800; color: #1F2937; }
+  .stat-box .cap { font-size: 8.5pt; color: #6B7280; margin-top: 2px; }
+
+  .company-meta { font-size: 9pt; color: #6B7280; margin-top: 4px; }
+
+  /* score badge */
+  .score-badge {
+    display: inline-block; width: 1.15in; height: 1.15in; border-radius: 50%;
+    background: #FEF3C7; color: #92400E; text-align: center; line-height: 1.15in;
+    font-size: 26pt; font-weight: 800; margin-right: 0.3in; vertical-align: middle;
+  }
+    .unavailable { background:#F3F4F6; border:1px solid #D1D5DB; border-left:4px solid #9CA3AF;
+      border-radius:6px; padding:14px 16px; margin:0.2in 0; color:#374151; }
+  .unavailable-title { font-weight:800; color:#111827; margin-bottom:4px; }
+  .bar-row { display:flex; align-items:center; gap:10px; margin:8px 0; }
+  .bar-label { width:0.65in; font-size:8.5pt; color:#4B5563; }
+  .bar-track { flex:1; height:14px; background:#F3F4F6; border-radius:7px; overflow:hidden; }
+  .bar-fill { height:14px; min-width:2px; background:#C2410C; border-radius:7px; }
+  .bar-value { width:0.85in; text-align:right; font-size:8.5pt; font-weight:700; }
+</style>
+</head>
+<body>
+{% macro footer(extra='') -%}
+<div class="footer">Shimline - Contractor Finance Operations · shimline.ca{% if is_sample %} · Demonstration using synthetic company data{% endif %}{% if extra %} · {{ extra }}{% endif %}</div>
+{%- endmacro %}
+
+<!-- PAGE 1: COVER -->
+<div class="page">
+  <span class="label">{{ company.label if company.label else ('Demonstration using synthetic company data' if is_sample else 'Confidential client report') }}</span>
+  <div class="cover-hero">
+    <div style="font-size:11pt; color:#6B7280; letter-spacing:0.05em; text-transform:uppercase;">
+      <span class="brand">Shimline</span> · Contractor Cash-Leak Review
+    </div>
+    <h1>{{ company.name }}</h1>
+    <div class="company-meta">
+      {% if company.province %}{{ company.province }} · {% endif %}{{ company.software }}{% if company.employees is not none %} · {{ company.employees }} employees{% endif %}{% if company.subcontractors is not none %} ·
+      {{ company.subcontractors }} active subcontractors{% endif %} · Report as of {{ report_date }}
+    </div>
+
+    <div class="big-number">{{ f.total_exposure|dollars }}</div>
+    <div class="big-number-caption">in cash and margin currently requiring attention</div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="num">{{ finding_count }}</div>
+        <div class="cap">Findings ranked by dollar impact</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">{{ urgent_project_count }}</div>
+        <div class="cap">Project{{ '' if urgent_project_count == 1 else 's' }} requiring review</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">{{ f.ar_over_90|dollars }}</div>
+        <div class="cap">Receivables over 90 days old</div>
+      </div>
+      {% if f.health_scores %}
+      <div class="stat-box">
+        <div class="num">{{ f.health_scores.Total }}/100</div>
+        <div class="cap">Overall books health score</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="footer">
+    Shimline - Contractor Finance Operations · This is a management bookkeeping diagnostic and does not
+    constitute an audit, review engagement, assurance engagement, tax opinion or legal advice. ·
+    {% if is_sample %}All figures on this page are synthetic demonstration data.{% else %}Prepared from the persisted bookkeeping run identified in the operator audit trail.{% endif %}
+  </div>
+</div>
+
+<!-- PAGE 2: EXECUTIVE FINDINGS -->
+<div class="page">
+  <h2>Executive findings</h2>
+  <p class="muted">Every figure below is computed directly from the transaction data - nothing on this page is estimated by eye.</p>
+  <table>
+    <tr><th>Finding</th><th>Exposure</th><th>Confidence</th><th>Priority</th></tr>
+    <tr>
+      <td>Invoices &gt; 90 days overdue</td>
+      <td>{{ f.ar_over_90|dollars }}</td>
+      <td>Certain</td>
+      <td class="priority-critical">Critical</td>
+    </tr>
+    <tr>
+      <td>Materials/labour without project assignment</td>
+      <td>{{ f.unassigned_job_costs_total|dollars }}</td>
+      <td>Certain</td>
+      <td class="priority-high">High</td>
+    </tr>
+    <tr>
+      <td>Likely duplicate supplier charge ({{ f.duplicate_vendor_charges_count }} instance{{ 's' if f.duplicate_vendor_charges_count != 1 else '' }})</td>
+      <td>{{ f.duplicate_vendor_charges_total|dollars }}</td>
+      <td>High</td>
+      <td class="priority-high">High</td>
+    </tr>
+    <tr>
+      <td>Unapplied customer payments</td>
+      <td>{{ f.unapplied_payments_total|dollars }}</td>
+      <td>High</td>
+      <td class="priority-high">High</td>
+    </tr>
+    {% if f.worst_project %}
+    <tr>
+      <td>{{ f.worst_project.project_name }} gross margin ({{ f.worst_project.margin_pct }}% vs {{ f.portfolio_avg_margin_pct }}% portfolio avg)</td>
+      <td>{{ f.worst_project_margin_gap|dollars }} margin gap*</td>
+      <td>High</td>
+      <td class="priority-review">Review</td>
+    </tr>
+    {% endif %}
+    {% if f.vendor_price_variance %}
+    <tr>
+      <td>Vendor price variance - {{ f.vendor_price_variance.line_item }}</td>
+      <td>+{{ f.vendor_price_variance.pct_change }}%</td>
+      <td>Medium</td>
+      <td class="priority-review">Review</td>
+    </tr>
+    {% endif %}
+  </table>
+  <p style="font-size:8.5pt; color:#6B7280; margin-top:18px;">
+    * Margin-gap estimates are analytical indicators of where a project's cost structure diverges from
+    comparable work in the same portfolio - they are not a guarantee of recoverable cash until the underlying
+    invoices, change orders and supplier bills are reviewed line by line.
+  </p>
+  <div style="margin-top:0.4in; background:#FFF7ED; border:1px solid #FDBA74; border-radius:8px; padding:16px 18px;">
+    <div style="font-weight:800; color:#9A3412; font-size:11pt; margin-bottom:8px;">What I'd fix first</div>
+    <div><span class="priority-critical">Priority 1</span> - review {{ [f.ar_over_90, f.unassigned_job_costs_total, f.duplicate_vendor_charges_total, f.unapplied_payments_total]|dollars_sum }} identified across aging, allocation, duplicate-charge, and payment checks</div>
+    {% if f.health_scores %}<div style="margin-top:4px;"><span class="priority-high">Priority 2</span> - job costing isn't fully reliable ({{ f.health_scores["Job costing"] }}/100); several cost lines aren't reaching their project</div>{% endif %}
+    {% if f.worst_project %}<div style="margin-top:4px;"><span class="priority-review">Priority 3</span> - {{ f.worst_project.project_name }} needs a line-by-line review before the next draw</div>{% endif %}
+  </div>
+  {{ footer() }}
+</div>
+
+<!-- PAGE 3: A/R -->
+<div class="page">
+  <h2>Accounts receivable</h2>
+  <p>Total outstanding: <strong>{{ f.ar_total_outstanding|dollars }}</strong> across {{ ar_invoice_count }} open invoices.</p>
+  <div style="margin:14px 0 18px;">
+    {% for bucket, amt in f.ar_aging.items() %}
+    <div class="bar-row">
+      <div class="bar-label">{{ bucket }} days</div>
+      <div class="bar-track"><div class="bar-fill" style="width:{{ ((amt / f.ar_total_outstanding * 100) if f.ar_total_outstanding else 0)|round(1) }}%;"></div></div>
+      <div class="bar-value">{{ amt|dollars }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <table>
+    <tr><th>Age bucket</th><th>Amount</th><th>% of total A/R</th></tr>
+    {% for bucket, amt in f.ar_aging.items() %}
+    <tr>
+      <td>{{ bucket }} days</td>
+      <td>{{ amt|dollars }}</td>
+      <td>{% if f.ar_total_outstanding %}{{ "{:.0f}".format(amt / f.ar_total_outstanding * 100) }}%{% else %}-{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p style="margin-top:0.3in;">
+    {{ f.ar_over_90|dollars }} has been outstanding for more than 90 days. On a portfolio this size,
+    that's cash that has already been earned and delivered - the collections conversation is usually the single
+    fastest recoverable-cash win in a review like this one.
+  </p>
+  <p>
+    Separately, {{ f.unapplied_payments_total|dollars }} in customer payments has been received but not
+    matched to an invoice - worth a same-week reconciliation pass so real A/R isn't overstated.
+  </p>
+  {{ footer() }}
+</div>
+
+<!-- PAGE 4: PROJECT PROFITABILITY -->
+<div class="page">
+  <h2>Project profitability</h2>
+  <p class="muted">{{ project_count }} project{{ '' if project_count == 1 else 's' }} reviewed{% if f.portfolio_avg_margin_pct is not none %} · portfolio average gross margin {{ f.portfolio_avg_margin_pct }}%{% endif %}</p>
+  {% if not top_projects %}
+  <div class="unavailable">
+    <div class="unavailable-title">Project profitability not available</div>
+    <div>{{ (f.unavailable | selectattr('field', 'equalto', 'project_profitability') | list | first).reason
+            if f.unavailable | selectattr('field', 'equalto', 'project_profitability') | list
+            else 'This file does not contain the job records this section is computed from.' }}</div>
+  </div>
+  {% else %}
+  <table>
+    <tr><th>Project</th><th>Revenue</th><th>Cost</th><th>Gross margin</th></tr>
+    {% for p in top_projects %}
+    <tr {% if f.worst_project and p.project_id == f.worst_project.project_id %}style="background:#FEF2F2;"{% endif %}>
+      <td>{{ p.project_name }}</td>
+      <td>{{ p.revenue|dollars }}</td>
+      <td>{{ p.cost|dollars }}</td>
+      <td {% if f.worst_project and p.project_id == f.worst_project.project_id %}class="priority-critical"{% endif %}>{{ p.margin_pct }}%</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {% if f.worst_project %}
+  <div style="margin-top:0.25in; background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:16px 18px;">
+    <div style="font-weight:800; color:#B91C1C; margin-bottom:6px;">{{ f.worst_project.project_name }} requires investigation</div>
+    <div>Running at {{ f.worst_project.margin_pct }}% gross margin against a {{ f.portfolio_avg_margin_pct }}% portfolio
+      average - an estimated {{ f.worst_project_margin_gap|dollars }} margin gap versus comparable work.</div>
+    <div style="margin-top:8px; font-weight:600;">Possible drivers (not yet confirmed):</div>
+    <ul style="margin:4px 0 0 18px; padding:0;">
+      <li>Subcontractor cost overrun</li>
+      <li>Material cost overrun or price variance</li>
+      <li>Missed or unbilled change orders</li>
+      <li>Cost allocation errors from the unassigned-materials issue on page 2</li>
+    </ul>
+  </div>
+  {% endif %}
+  {{ footer() }}
+</div>
+
+<!-- PAGE 5: HEALTH SCORES -->
+<div class="page">
+  <h2>Books health scores</h2>
+  {% if not f.health_scores %}
+  <div class="unavailable">
+    <div class="unavailable-title">Health scores not available</div>
+    <div>{{ (f.unavailable | selectattr('field', 'equalto', 'health_scores') | list | first).reason
+            if f.unavailable | selectattr('field', 'equalto', 'health_scores') | list
+            else 'One or more of the figures these scores are computed from could not be determined.' }}</div>
+  </div>
+  {% else %}
+  <div style="display:flex; align-items:center; margin-bottom:0.25in;">
+    <div class="score-badge">{{ f.health_scores.Total }}</div>
+    <div>
+      <div style="font-size:14pt; font-weight:800;">Overall books health: {{ f.health_scores.Total }} / 100</div>
+      <div class="muted">Computed from the same transaction data as every finding on the previous pages -
+        not a subjective impression.</div>
+    </div>
+  </div>
+  <div style="margin:12px 0 18px;">
+    {% for category in ['Reconciliation', 'Receivables', 'Job costing', 'Expense classification', 'Management reporting'] %}
+    <div class="bar-row">
+      <div class="bar-label" style="width:1.45in;">{{ category }}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:{{ f.health_scores[category] }}%;"></div></div>
+      <div class="bar-value">{{ f.health_scores[category] }}/100</div>
+    </div>
+    {% endfor %}
+  </div>
+  <table style="margin-top:0.2in;">
+    <tr><th>Category</th><th>Score</th><th>What it measures</th></tr>
+    <tr><td>Reconciliation</td><td>{{ f.health_scores.Reconciliation }}/100</td><td>Bank/payment matching hygiene</td></tr>
+    <tr><td>Receivables</td><td>{{ f.health_scores.Receivables }}/100</td><td>Share of A/R that's aged past 90 days</td></tr>
+    <tr><td>Job costing</td><td>{{ f.health_scores["Job costing"] }}/100</td><td>How reliably costs reach the right project</td></tr>
+    <tr><td>Expense classification</td><td>{{ f.health_scores["Expense classification"] }}/100</td><td>Duplicate/miscoded vendor spend</td></tr>
+    <tr><td>Management reporting</td><td>{{ f.health_scores["Management reporting"] }}/100</td><td>How much you can trust the reports built on the above</td></tr>
+  </table>
+  {% endif %}
+  {% if f.unavailable %}
+  <h2 style="margin-top:0.35in;">What this review could not determine</h2>
+  <p class="muted">Every figure above is computed from the connected file. These could not be,
+    and are listed rather than estimated or left blank.</p>
+  <table>
+    <tr><th>Figure</th><th>Why</th><th>What would settle it</th></tr>
+    {% for gap in f.unavailable %}
+    <tr>
+      <td>{{ gap.field.replace('_', ' ') }}</td>
+      <td>{{ gap.reason }}</td>
+      <td>{{ gap.get('missing_source') or 'A reviewer covers this by hand' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {{ footer() }}
+</div>
+
+<!-- PAGE 6: 30-DAY FIX PLAN -->
+<div class="page">
+  <h2>30-day fix plan</h2>
+  <table>
+    <tr><th>Week</th><th>Focus</th></tr>
+    <tr><td>Week 1</td><td>Reconcile outstanding accounts; match the {{ f.unapplied_payments_total|dollars }} in unapplied payments</td></tr>
+    <tr><td>Week 2</td><td>Rebuild job-cost allocation; assign the {{ f.unassigned_job_costs_total|dollars }} in untracked materials/labour to their projects</td></tr>
+    <tr><td>Week 3</td><td>Receivables cleanup; collections sprint on the {{ f.ar_over_90|dollars }} aged past 90 days</td></tr>
+    <tr><td>Week 4</td><td>Stand up a repeatable project-profitability report so {% if f.worst_project %}{{ f.worst_project.project_name }}-style issues{% else %}margin issues{% endif %} surface in week 2 of a job, not month 6</td></tr>
+  </table>
+
+  {% if is_sample %}
+  <div style="margin-top:0.4in; text-align:center; background:#1F2937; color:white; border-radius:10px; padding:28px 24px;">
+    <div style="font-size:11pt; letter-spacing:0.05em; text-transform:uppercase; color:#FDBA74;">Cleanup Sprint</div>
+    <div style="font-size:26pt; font-weight:800; margin:6px 0;">C$1,250 fixed fee</div>
+    <div style="font-size:9.5pt; color:#D1D5DB;">The C$199 paid for this review is credited in full toward the Cleanup Sprint.</div>
+  </div>
+  {% else %}
+  <div style="margin-top:0.4in; text-align:center; background:#1F2937; color:white; border-radius:10px; padding:28px 24px;">
+    <div style="font-size:11pt; letter-spacing:0.05em; text-transform:uppercase; color:#FDBA74;">Reviewer next step</div>
+    <div style="font-size:17pt; font-weight:800; margin:6px 0;">Confirm the evidence and agree the correction plan</div>
+    <div style="font-size:9.5pt; color:#D1D5DB;">No bookkeeping correction is made by this report.</div>
+  </div>
+  {% endif %}
+
+  <p style="margin-top:0.35in; font-size:8pt; color:#6B7280;">
+    This is a management bookkeeping diagnostic and does not constitute an audit, review engagement, assurance
+    engagement, tax opinion or legal advice. {% if is_sample %}{{ company.name }} is a fictional demonstration company;
+    all figures in this sample are synthetic and generated for illustration only.{% else %}Figures are generated from
+    the identified bookkeeping run and require human review against source records before corrective action.{% endif %}
+  </p>
+  {{ footer() }}
+</div>
+
+</body>
+</html>

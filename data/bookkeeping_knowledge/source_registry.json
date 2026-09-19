@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Authoritative-source registry for Shimline's deterministic bookkeeping engine. This registry is metadata, not a scraped training corpus or a substitute for professional advice.",
+  "governance": {
+    "default_ingestion": "Store source metadata, an effective date, retrieval date, content hash, permitted-use assessment, and the exact rule citation. Do not bulk-copy or train on third-party content unless its licence and the intended use have been approved.",
+    "rule_lifecycle": ["discover", "cite", "encode", "golden-test", "qualified-review", "release", "monitor", "retire"],
+    "customer_data": "Customer data is tenant-isolated. It is not used for cross-customer training without a documented contract, privacy notice, permission, and governance approval."
+  },
+  "sources": [
+    {
+      "id": "cra-electronic-record-keeping",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/ic05-1/electronic-record-keeping.html",
+      "scope": ["audit trail", "source-document retention", "system documentation", "exportability", "change history"],
+      "engine_use": "Mandatory audit/evidence controls",
+      "refresh": "quarterly and before a compliance release",
+      "automation_status": "authoritative requirements; encode only individually cited controls"
+    },
+    {
+      "id": "cra-records-retention",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/business-records.html",
+      "scope": ["business records", "supporting documents", "retention"],
+      "engine_use": "Evidence-retention policy and export requirements",
+      "refresh": "quarterly",
+      "automation_status": "authoritative requirements; retain jurisdiction/customer exceptions separately"
+    },
+    {
+      "id": "cra-itc-documentary-requirements",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/8-4/documentary-requirements-claiming-input-tax-credits.html",
+      "scope": ["GST/HST", "input tax credits", "documentary evidence"],
+      "engine_use": "Evidence-completeness gate; never infer missing tax evidence",
+      "refresh": "before each tax-rule release",
+      "automation_status": "authoritative requirements; tax filing remains separately gated"
+    },
+    {
+      "id": "cra-gst-hst-rates-place-of-supply",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-place-supply.html",
+      "scope": ["GST/HST", "effective rates", "place of supply", "real-property services"],
+      "engine_use": "Date- and fact-dependent tax validation; ambiguity must escalate",
+      "refresh": "monthly and on CRA change notice",
+      "automation_status": "authoritative reference; no generic tax classification rule"
+    },
+    {
+      "id": "cra-home-construction-gst-hst",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4052/rc4052-gst-hst-information-home-construction-industry.html",
+      "scope": ["construction", "real property", "GST/HST"],
+      "engine_use": "Construction-specific exception routing and research references",
+      "refresh": "quarterly",
+      "automation_status": "reference only until scenario-level rules are reviewed"
+    },
+    {
+      "id": "cra-payroll-formulas",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html",
+      "scope": ["CPP", "EI", "income-tax withholding", "payroll formulas"],
+      "engine_use": "Golden-test reference for a future payroll lane",
+      "refresh": "at every annual or mid-year CRA update",
+      "automation_status": "not a production payroll calculator; Quebec excluded"
+    },
+    {
+      "id": "cra-pdoc",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-businesses/payroll-deductions-online-calculator.html",
+      "scope": ["payroll verification", "federal", "provincial and territorial except Quebec"],
+      "engine_use": "Independent differential-check reference, not a machine integration assumption",
+      "refresh": "each payroll formula release",
+      "automation_status": "manual/reference validation only"
+    },
+    {
+      "id": "cra-employer-payroll-guide",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4001/employers-guide-payroll-deductions-remittances.html",
+      "scope": ["payroll", "province of employment", "remittances"],
+      "engine_use": "Workflow eligibility and exception rules",
+      "refresh": "quarterly",
+      "automation_status": "reference only until payroll-provider and reviewer acceptance"
+    },
+    {
+      "id": "cra-t5018",
+      "authority": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll/completing-filing-information-returns/t5018-slip-statement-contract-payments.html",
+      "scope": ["construction subcontractors", "T5018"],
+      "engine_use": "Eligibility and evidence checklist for a future contractor-reporting lane",
+      "refresh": "annually before information-return season",
+      "automation_status": "preparation/review only; filing separately gated"
+    },
+    {
+      "id": "opc-third-party-processors",
+      "authority": "Office of the Privacy Commissioner of Canada",
+      "url": "https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/gd_third-party_202609/",
+      "scope": ["PIPEDA", "AI providers", "third-party processing", "vendor due diligence"],
+      "engine_use": "Jev/provider onboarding gate and data-sharing review",
+      "refresh": "before every new processor or material scope change",
+      "automation_status": "governance requirement; legal review required"
+    },
+    {
+      "id": "intuit-qbo-cdc-provided-docs",
+      "authority": "Intuit QuickBooks Online API documentation supplied by project owner",
+      "url": "local-provided-documentation",
+      "scope": ["Change Data Capture", "30-day lookback", "maximum 1000 objects", "full entity payload", "deleted objects"],
+      "engine_use": "Incremental-sync contract and test fixtures",
+      "refresh": "on Intuit API-version review",
+      "automation_status": "requires official-doc and sandbox conformance verification"
+    },
+    {
+      "id": "intuit-qbo-entity-docs-provided",
+      "authority": "Intuit QuickBooks Online API documentation supplied by project owner",
+      "url": "local-provided-documentation",
+      "scope": ["accounts", "customers", "vendors", "invoices", "bills", "payments", "journal entries", "reports", "tax objects"],
+      "engine_use": "Entity mapping and mutation contract references",
+      "refresh": "on Intuit API-version review",
+      "automation_status": "requires sandbox read-back before production enablement"
+    },
+    {
+      "id": "shimline-qbo-sandbox-plan",
+      "authority": "Shimline internal acceptance plan",
+      "url": "docs/QBO_SANDBOX_ACCEPTANCE_PLAN.md",
+      "scope": ["OAuth", "sync", "snapshot hash", "controlled writes", "read-back", "retention"],
+      "engine_use": "Release evidence and integration acceptance",
+      "refresh": "on every connector release",
+      "automation_status": "internal control; does not replace provider documentation"
+    },
+    {
+      "id": "market-intuit-accountant-suite",
+      "authority": "Intuit product documentation",
+      "url": "https://quickbooks.intuit.com/ca/accountants/intuit-accountant-suite/",
+      "scope": ["competitive intelligence", "AI categorization", "anomaly detection", "firm workflow"],
+      "engine_use": "Market capability baseline only",
+      "refresh": "quarterly",
+      "automation_status": "vendor claim; do not use as an accuracy benchmark"
+    },
+    {
+      "id": "market-digits-agentic-ledger",
+      "authority": "Digits product documentation",
+      "url": "https://help.digits.com/business-agentic-general-ledger/digits-ai",
+      "scope": ["competitive intelligence", "continuous bookkeeping", "reconciliation", "exception routing"],
+      "engine_use": "Market capability baseline only",
+      "refresh": "quarterly",
+      "automation_status": "vendor claim; do not use as an accuracy benchmark"
+    },
+    {
+      "id": "market-ramp-accounting-automation",
+      "authority": "Ramp product documentation",
+      "url": "https://ramp.com/accounting-automation-software",
+      "scope": ["competitive intelligence", "spend controls", "ERP sync", "close automation"],
+      "engine_use": "Market capability baseline only",
+      "refresh": "quarterly",
+      "automation_status": "vendor claim; do not use as an accuracy benchmark"
+    },
+    {
+      "id": "market-dext-ai-assist",
+      "authority": "Dext product documentation",
+      "url": "https://help.dext.com/en/articles/500051-what-is-dext-ai-assist",
+      "scope": ["competitive intelligence", "document extraction", "categorization", "bookkeeping rules"],
+      "engine_use": "Market capability baseline only",
+      "refresh": "quarterly",
+      "automation_status": "vendor claim; do not use as an accuracy benchmark"
+    },
+    {
+      "id": "market-vic-ai",
+      "authority": "Vic.ai product site",
+      "url": "https://www.vic.ai/",
+      "scope": ["competitive intelligence", "AP automation", "invoice processing", "bill pay"],
+      "engine_use": "Market capability baseline only",
+      "refresh": "quarterly",
+      "automation_status": "vendor claim; do not use as an accuracy benchmark"
+    }
+  ]
+}

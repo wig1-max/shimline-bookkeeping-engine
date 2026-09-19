@@ -1,0 +1,8 @@
+Transaction Detail by Account,,,,,,
+January 1 - March 31 2026,,,,,,
+Date,Transaction Type,Num,Name,Memo/Description,Account,Customer/Project,Amount
+01/05/2026,Invoice,1001,Smith,Progress billing,Construction Income,Smith:Kitchen,20000.00
+01/06/2026,Bill,B-91,Lumber Co,Framing lumber,Job Materials,Smith:Kitchen,12000.00
+01/07/2026,Expense,E-17,Tool Hire,Excavator,Job Materials,,1000.00
+02/01/2026,Expense,E-22,Tool Hire,Compressor,Job Materials,Smith:Kitchen,500.00
+02/01/2026,Expense,E-22,Tool Hire,Compressor,Job Materials,Smith:Kitchen,500.00

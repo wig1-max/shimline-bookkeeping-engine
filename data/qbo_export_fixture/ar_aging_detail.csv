@@ -1,0 +1,5 @@
+Accounts Receivable Aging Detail,,,,
+As of March 31 2026,,,,
+Customer,Transaction Type,Date,Num,Due Date,Open Balance
+Smith,Invoice,01/05/2026,1001,02/04/2026,7500.00
+TOTAL,,,,,7500.00

@@ -1,0 +1,112 @@
+{% extends "base.html" %}{% block title %}First contact · {{ organization.name }}{% endblock %}
+{% block content %}
+<header class="page-head detail-head">
+  <div>
+    <a class="back-link" href="/admin/clients/{{ organization.id }}">{{ icon('arrow-left') }} {{ organization.name }}</a>
+    <h1>What this file turned out to contain</h1>
+    {% if report %}
+    <p>Read {{ report.created_at }} · {{ report.api_calls }} API calls</p>
+    {% else %}
+    <p>Nothing has read this client's books yet.</p>
+    {% endif %}
+  </div>
+  {% if report and report.status == 'ok' and report.ledger_complete %}
+  <div class="hero-actions"><span class="status-pill status-ready">Ledger rebuilt</span></div>
+  {% elif report %}
+  <div class="hero-actions"><span class="status-pill status-awaiting_client">Blocked</span></div>
+  {% endif %}
+</header>
+
+{% if not report %}
+<div class="empty-inline">
+  No probe has run. It runs on its own the first time a QuickBooks connection
+  appears, on the daily timer — so if this client has just been connected, the
+  answer will be here without anyone doing anything. If they are not connected,
+  that is the step this is waiting on.
+</div>
+{% else %}
+
+{% if report.status == 'failed' %}
+<section class="verification">
+  <div class="section-title"><h3>The pull did not finish</h3><span>Recorded rather than discarded: what it died on is the finding</span></div>
+  <div class="empty-inline">
+    <strong>{{ report.failed_at }}</strong> — {{ report.failure }}
+  </div>
+  <p>Every entity is read from the same <code>/query</code> URL, so the entity
+  name is the only thing that distinguishes this from any other failed read.</p>
+</section>
+{% endif %}
+
+<section class="verification">
+  <div class="section-title"><h3>Assumptions taken from documentation</h3><span>Each one is a client whose ledger blocks if it is wrong</span></div>
+  <table class="coverage-table">
+    <thead><tr><th>Assumption</th><th>On this file</th><th>What it found</th></tr></thead>
+    <tbody>
+    {% for item in report.assumptions %}
+      <tr>
+        <td>{{ item.name }}<br><span class="muted">{{ item.consequence }}</span></td>
+        <td>
+          {% if item.verdict == held %}<span class="status-pill status-ready">held</span>
+          {% elif item.verdict == failed %}<span class="status-pill status-awaiting_client">failed</span>
+          {% else %}<span class="status-pill">unknown</span>{% endif %}
+        </td>
+        <td>{{ item.detail }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="muted"><strong>unknown</strong> is deliberately not a pass. A file with
+  no taxed sale says nothing about whether a tax line carries an amount, and
+  recording that as held would manufacture evidence.</p>
+</section>
+
+<section class="verification">
+  <div class="section-title"><h3>What the reconstruction made of it</h3><span>Every refusal, in the order it came out</span></div>
+  <p>
+    {{ report.documents_refused }} of {{ report.documents_seen }} documents could
+    not be posted.
+    {% if report.ledger_complete %}
+    A complete double-entry ledger came out the other end.
+    {% else %}
+    No complete ledger could be derived, so balance-dependent checks are blocked rather than clean.
+    {% endif %}
+  </p>
+  {% if report.refusals %}
+  <div class="verify-list">
+    {% for reason in report.refusals %}
+    <div class="verify-item verify-failed"><span class="verify-state">Refused</span><div><p>{{ reason }}</p></div></div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-inline">Nothing was refused.</div>
+  {% endif %}
+</section>
+
+{% if report.quarantine_evaluable %}
+<section class="verification">
+  <div class="section-title"><h3>What quarantine could preserve</h3><span>Evidence for a later architecture decision; no document was skipped</span></div>
+  <p>If the {{ report.quarantine_documents }} refused document{% if report.quarantine_documents != 1 %}s{% endif %} were quarantined, <strong>{{ report.quarantine_checks | length }} of the published 16 checks</strong> use none of the refused document types and could still run on their complete inputs.</p>
+  {% if report.quarantine_checks %}
+  <p class="muted">{{ report.quarantine_checks | map(attribute='id') | join(', ') }} — {{ report.quarantine_checks | map(attribute='title') | join('; ') }}</p>
+  {% endif %}
+  <p class="muted">This is a conservative lower bound. Checks that use the refused type, any ledger-wide balance, a missing external source, or human judgement are not counted. The production engine remains fail-closed.</p>
+</section>
+{% endif %}
+
+<section class="verification">
+  <div class="section-title"><h3>What the provider actually returned</h3><span>Row counts, and the field names on a real document</span></div>
+  <table class="coverage-table">
+    <thead><tr><th>Entity</th><th>Rows</th><th>Fields on the first row</th></tr></thead>
+    <tbody>
+    {% for entity, count in report.rows.items() %}
+      <tr>
+        <td>{{ entity }}</td>
+        <td>{{ count }}</td>
+        <td class="muted">{{ report.shapes.get(entity, []) | join(', ') or '—' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}

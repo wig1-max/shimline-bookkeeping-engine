@@ -1,0 +1,198 @@
+{% extends "base.html" %}{% block title %}Bookkeeping review · {{ run.organization_name }}{% endblock %}
+{% block content %}
+<header class="page-head detail-head">
+  <div>
+    <a class="back-link" href="/admin/engagements/{{ run.engagement_id }}">{{ icon('arrow-left') }} {{ run.engagement_title or 'Engagement' }}</a>
+    <h1>Cleanup review</h1>
+    <p>{{ run.organization_name }} · {{ run.period_start }} → {{ run.period_end }}</p>
+  </div>
+  <div class="hero-actions">
+    {% if session.role in ('owner', 'reviewer') %}
+    <form method="post" action="/admin/engagements/{{ run.engagement_id }}/bookkeeping/{{ run.id }}/cash-leak-review.pdf">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button class="button-primary">Download client PDF</button>
+    </form>
+    {% endif %}
+    <a class="button-secondary" href="/admin/bookkeeping/{{ run.id }}/working-papers">Download working papers</a>
+    <span class="status-pill">{{ run.status }}</span>
+  </div>
+</header>
+
+<div class="engine-summary">
+  <div><span>Findings</span><strong>{{ findings|length }}</strong></div>
+  <div><span>Corrections</span><strong>{{ proposals|length }}</strong></div>
+  <div><span>Evidence requests</span><strong>{{ evidence_requests|length }}</strong></div>
+  <div><span>Checks run</span><strong>{{ coverage.checks_automated or 0 }} / {{ coverage.checks_total or 0 }}</strong></div>
+  <div><span>Verified writes</span><strong>{{ executions.values()|selectattr('status','equalto','verified')|list|length }}</strong></div>
+</div>
+
+<section class="verification">
+  <div class="section-title"><h3>Why these numbers can be trusted</h3><span>What was checked about this ledger, on this run</span></div>
+  <div class="verify-list">
+    {% for check in verification.checks %}
+    <div class="verify-item verify-{{ check.state }}">
+      <span class="verify-state">{{ 'Passed' if check.state == 'passed' else ('Failed' if check.state == 'failed' else 'Did not run') }}</span>
+      <div>
+        <strong>{{ check.name }}</strong>
+        <p>{{ check.detail }}</p>
+        {% if check.action %}<p class="verify-action">{{ check.action }}</p>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <details class="assurance-note">
+    <summary>{{ assurance.name }}</summary>
+    <p>{{ assurance.covers }}</p>
+    <p class="tone-muted"><strong>What this does not cover:</strong> {{ assurance.does_not_cover }}</p>
+  </details>
+</section>
+
+<section class="engine-evidence">
+  <div class="section-title"><h3>Check coverage</h3><span>What this run examined, and what it could not</span></div>
+  <table class="coverage-table">
+    <thead><tr><th>#</th><th>Check</th><th>Result</th><th>Why</th></tr></thead>
+    <tbody>
+    {% for item in coverage.checks %}
+      <tr>
+        <td class="coverage-id">{{ item.id }}</td>
+        <td>{{ item.title }}</td>
+        <td><span class="status-pill coverage-{{ item.status }}">{{ item.status }}</span></td>
+        <td class="coverage-why">
+          {%- if item.status == 'blocked' %}Needs: {{ item.missing_source }}{% if item.note %} — {{ item.note }}{% endif %}
+          {%- elif item.status == 'manual' %}{{ item.note or 'Covered by the reviewer, not by the engine.' }}
+          {%- elif item.status == 'defect' %}Found — see the findings below.{% if item.coverage_note %} {{ item.coverage_note }}{% endif %}
+          {%- else %}Ran against this file; nothing found.{% if item.coverage_note %} {{ item.coverage_note }}{% endif %}
+          {%- endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="empty-inline">No coverage report was stored for this run.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="coverage-foot">A <strong>manual</strong> or <strong>blocked</strong> check is not a pass. Nothing on this page
+    claims a check ran unless it did.</p>
+</section>
+
+<section class="engine-evidence">
+  <div class="section-title"><h3>Control account reconciliation</h3><span>Recomputed after every write</span></div>
+  {% for item in reconciliations %}
+  <div class="evidence-request">
+    <strong>Account {{ item.account_ref }}</strong>
+    {% if item.status == 'no_source' %}
+      <p>Not reconciled. Missing: {{ item.missing_source }}</p>
+    {% else %}
+      <p>Statement {{ item.source_balance }} · ledger {{ item.ledger_balance }} · difference {{ item.difference }}</p>
+    {% endif %}
+    <span class="status-pill coverage-{{ 'clean' if item.status == 'reconciled' else 'blocked' }}">{{ item.status }}</span>
+  </div>
+  {% else %}
+  <div class="empty-inline">No reconciliation has been recorded for this run.</div>
+  {% endfor %}
+</section>
+
+{% if evidence_requests %}
+<section class="engine-evidence">
+  <div class="section-title"><h3>Missing evidence</h3><span>No correction is created from age or description alone</span></div>
+  {% for item in evidence_requests %}
+  <div class="evidence-request"><strong>{{ item.title }}</strong><p>{{ item.requested_item }}</p><span class="status-pill">{{ item.status }}</span></div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<section>
+  <div class="section-title"><h3>Proposed corrections</h3><span>What each change does, its evidence, and what the provider said</span></div>
+  {% set undecided = proposals|selectattr('status','in',('proposed','reviewed'))|list %}
+  {% if undecided %}
+  <form class="batch-bar" id="batch-decide" method="post" action="/admin/bookkeeping/{{ run.id }}/decisions">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <span>{{ undecided|length }} awaiting a decision. Tick the ones you have read.</span>
+    <input name="note" placeholder="Note for all of them">
+    <button class="button-primary" name="action" value="approve">Approve selected</button>
+    <button class="button-secondary" name="action" value="reject">Reject selected</button>
+    <button class="button-secondary" name="action" value="escalate">Escalate selected</button>
+  </form>
+  <p class="batch-note">If any of these changed since this page loaded, the whole batch is refused rather than half applied.</p>
+  {% endif %}
+  {% for item in proposals %}
+  <article class="proposal-card">
+    <header>
+      <div>
+        <span class="proposal-kicker">{{ item.severity }} · {{ item.action_type.replace('_',' ') }}</span>
+        <h2>{% if item.status in ('proposed','reviewed') %}<label class="batch-pick"><input form="batch-decide" type="checkbox" name="selected" value="{{ item.id }}:{{ item.fingerprint }}"> </label>{% endif %}{{ item.title }}</h2>
+      </div>
+      <span class="status-pill status-{{ item.status }}">{{ item.status }}</span>
+    </header>
+    <p class="proposal-reason">{{ item.reason }}</p>
+    <div class="effect-row">
+      <span>Financial effect <strong>{{ item.financial_effect }} CAD</strong></span>
+      <span>Tax effect <strong>{{ item.tax_effect }} CAD</strong></span>
+      <span>Evidence <strong>{{ item.evidence_status }}</strong></span>
+      {% if item.expected_sync_token is not none %}<span>Reviewed token <strong>{{ item.expected_sync_token }}</strong></span>{% endif %}
+    </div>
+    {% set diff = item.changes %}
+    <div class="change-table">
+      <div class="change-head"><span>Field</span><span>Now</span><span>Would become</span></div>
+      {% for change in diff %}
+      <div class="change-row change-{{ change.kind }}">
+        <span>{{ change.label }}</span>
+        <span class="was">{{ change.before or '—' }}</span>
+        <span class="becomes">{{ change.after or '—' }}</span>
+      </div>
+      {% else %}
+      <div class="change-row"><span colspan="3">This proposal changes no field.</span></div>
+      {% endfor %}
+    </div>
+    <details class="raw-diff"><summary>The exact documents, as QuickBooks holds them</summary>
+      <div class="diff-grid">
+        <div><h4>Current entry</h4><pre>{{ item.current|tojson(indent=2) }}</pre></div>
+        <div><h4>Proposed entry</h4><pre>{{ item.proposed|tojson(indent=2) }}</pre></div>
+      </div>
+    </details>
+    {% set execution = executions.get(item.id) %}
+    {% if execution %}
+    <div class="verified-result tone-{{ 'good' if execution.status == 'verified' else 'overdue' }}">
+      {{ icon('shield-check') }}
+      <span><strong>{{ execution.status|capitalize }}</strong>{% if execution.provider_id %} · QBO {{ execution.provider_type }} {{ execution.provider_id }} · SyncToken {{ execution.provider_sync_token }}{% endif %}</span>
+    </div>
+    {% endif %}
+    {% if item.status in ('proposed','reviewed') %}
+    <div class="proposal-actions">
+      <form method="post" action="/admin/bookkeeping/proposals/{{ item.id }}/decision">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><input type="hidden" name="action" value="approve">
+        <input name="note" placeholder="Approval note"><button class="button-primary">Approve</button>
+      </form>
+      <form method="post" action="/admin/bookkeeping/proposals/{{ item.id }}/decision">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><input type="hidden" name="action" value="reject">
+        <input name="note" required placeholder="Reason"><button class="button-secondary">Reject</button>
+      </form>
+      <form method="post" action="/admin/bookkeeping/proposals/{{ item.id }}/decision">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><input type="hidden" name="action" value="escalate">
+        <input name="note" required placeholder="Escalation note"><button class="button-secondary">Escalate</button>
+      </form>
+      <details class="edit-proposal"><summary>Edit exact proposal JSON</summary>
+        <form method="post" action="/admin/bookkeeping/proposals/{{ item.id }}/decision">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><input type="hidden" name="action" value="edit">
+          <textarea name="edited_json" rows="12" required>{{ item.proposed|tojson(indent=2) }}</textarea>
+          <input name="note" required placeholder="Why this changed"><button class="button-secondary">Save new version</button>
+        </form>
+      </details>
+    </div>
+    {% elif item.status == 'approved' %}
+    <form method="post" action="/admin/bookkeeping/proposals/{{ item.id }}/execute" class="execute-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button class="button-primary">Execute in QBO sandbox</button>
+      <span>Uses an idempotency key, reads back, and verifies before it is marked complete.</span>
+    </form>
+    {% endif %}
+  </article>
+  {% else %}<div class="empty-inline">No evidence-backed corrections are ready.</div>{% endfor %}
+</section>
+
+<section class="residual-findings">
+  <div class="section-title"><h3>Residual findings</h3><span>Detected items that are not currently writable</span></div>
+  {% for item in findings if not item.id in proposals|map(attribute='finding_id')|list %}
+  <div class="finding-row"><div><strong>{{ item.title }}</strong><p>{{ item.reason }}</p></div><span class="status-pill">{{ item.evidence_status }}</span></div>
+  {% else %}<div class="empty-inline">No residual findings.</div>{% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}{% block title %}GST/HST · {{ organization.name }}{% endblock %}
+{% block content %}
+<header class="page-head detail-head">
+  <div>
+    <a class="back-link" href="/admin/clients/{{ organization.id }}">{{ icon('arrow-left') }} {{ organization.name }}</a>
+    <h1>GST/HST return</h1>
+    {% if prepared %}
+    <p>{{ prepared.period_start }} → {{ prepared.period_end }}{% if arrangement %} · {{ arrangement.frequency }} filer{% if arrangement.calculation_method %} · {{ arrangement.calculation_method }} method{% endif %}{% endif %}{% if due %} · due {{ due }}{% endif %}</p>
+    {% else %}
+    <p>Nothing to prepare yet.</p>
+    {% endif %}
+  </div>
+  {% if prepared and prepared.filable %}
+  <div class="hero-actions"><span class="status-pill status-ready">Ready for review</span></div>
+  {% elif prepared %}
+  <div class="hero-actions"><span class="status-pill status-awaiting_client">Not filable</span></div>
+  {% endif %}
+</header>
+
+{% if problem %}
+<div class="empty-inline">{{ problem }}</div>
+{% endif %}
+
+{% if not arrangement or not arrangement.calculation_method %}
+<section class="verification">
+  <div class="section-title"><h3>How does this client file?</h3><span>Nothing is assumed: frequency and calculation method both change the return</span></div>
+  <form class="batch-bar arrangement-form" method="post" action="/admin/clients/{{ organization.id }}/gst/arrangement">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <label>Files
+      <select name="frequency" required>
+        <option value="quarterly"{% if arrangement and arrangement.frequency == 'quarterly' %} selected{% endif %}>quarterly</option>
+        <option value="monthly"{% if arrangement and arrangement.frequency == 'monthly' %} selected{% endif %}>monthly</option>
+        <option value="annual"{% if arrangement and arrangement.frequency == 'annual' %} selected{% endif %}>annually</option>
+      </select>
+    </label>
+    <label>Calculates tax using
+      <select name="calculation_method" required>
+        <option value="">choose method</option>
+        <option value="regular">regular method</option>
+        <option value="quick">Quick Method</option>
+      </select>
+    </label>
+    <label>Year end
+      <select name="year_end_month" required>
+        {% for number, name in months %}<option value="{{ number }}"{% if number == 12 %} selected{% endif %}>{{ name }}</option>{% endfor %}
+      </select>
+      <input name="year_end_day" type="number" min="1" max="31" value="31" required aria-label="Year end day">
+    </label>
+    <label>Registrant
+      <select name="registrant">
+        <option value="">not recorded</option>
+        <option value="corporation">corporation</option>
+        <option value="individual">individual or sole proprietor</option>
+      </select>
+    </label>
+    <input name="gst_number" placeholder="GST/HST number" value="{{ arrangement.gst_number if arrangement else '' }}">
+    <button class="button-primary">Record</button>
+  </form>
+  <p class="batch-note">The Quick Method uses different arithmetic and is not implemented here; recording it blocks the return explicitly. The registrant type only changes an annual filer's dates. Leave any fact unrecorded rather than guessing.</p>
+</section>
+{% endif %}
+
+{% if prepared %}
+  {% if prepared.filable %}
+  <div class="engine-summary return-lines">
+    {% for line in ['101', '105', '108', '109'] %}
+    <div><span>Line {{ line }} · {{ line_titles[line] }}</span><strong>${{ '{:,.2f}'.format(prepared.lines[line]) }}</strong></div>
+    {% endfor %}
+  </div>
+  <p class="batch-note">Prepared for review. Shimline does not file: an accountant checks these figures and submits them.</p>
+  {% else %}
+  <section class="verification">
+    <div class="section-title"><h3>Why there is no return</h3><span>Every one of these has to be settled before a figure is produced</span></div>
+    <div class="verify-list">
+      {% for reason in prepared.blocked %}
+      <div class="verify-item verify-failed"><span class="verify-state">Blocked</span><div><p>{{ reason }}</p></div></div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="engine-evidence">
+    <div class="section-title"><h3>What went into it</h3><span>Per rate, with the amount each was charged on</span></div>
+    <table class="coverage-table">
+      <thead><tr><th>Rate</th><th>Side</th><th>Taxable base</th><th>Tax</th></tr></thead>
+      <tbody>
+      {% for group, side in [(prepared.collected_rates, 'Collected'), (prepared.paid_rates, 'Input tax credit')] %}
+        {% for item in group %}
+        <tr><td>{{ item.label }}</td><td>{{ side }}</td><td>${{ '{:,.2f}'.format(item.taxable_base) }}</td><td>${{ '{:,.2f}'.format(item.tax_amount) }}</td></tr>
+        {% endfor %}
+      {% endfor %}
+      {% for item in prepared.excluded_provincial %}
+      <tr class="tone-muted"><td>{{ item.label }}</td><td>Provincial — not on this return</td><td>${{ '{:,.2f}'.format(item.taxable_base) }}</td><td>${{ '{:,.2f}'.format(item.tax_amount) }}</td></tr>
+      {% endfor %}
+      {% if not prepared.collected_rates and not prepared.paid_rates and not prepared.excluded_provincial %}
+      <tr><td colspan="4">No tax was charged in this period.</td></tr>
+      {% endif %}
+      </tbody>
+    </table>
+    {% if prepared.excluded_provincial %}
+    <p class="batch-note">Provincial sales tax is real and is deliberately not on this return. It is listed so you can see it was found and excluded, rather than wondering whether it was missed.</p>
+    {% endif %}
+  </section>
+
+  <section class="verification">
+    <div class="section-title"><h3>Checked two ways</h3><span>QuickBooks' tax detail against the posted ledger</span></div>
+    <div class="verify-list">
+      <div class="verify-item verify-{{ 'passed' if prepared.agreement.status == 'agrees' else 'failed' }}">
+        <span class="verify-state">{{ 'Agrees' if prepared.agreement.status == 'agrees' else 'Disagrees' }}</span>
+        <div>
+          <strong>Stated {{ prepared.agreement.stated or '—' }} · posted {{ prepared.agreement.posted or '—' }}</strong>
+          <p>{{ prepared.agreement.detail or prepared.agreement.checked or '' }}</p>
+          <p class="verify-action">The posted reading checks the totals. Which part is GST/HST and which is provincial rests on how each rate is classified, below.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% if pending_rates %}
+<section class="verification">
+  <div class="section-title"><h3>Rates nobody has sorted onto a return</h3><span>A rate blocks the return for any period it was charged in</span></div>
+  {% for rate in pending_rates %}
+  <div class="batch-bar">
+    <span><strong>{{ rate.label() }}</strong>{% if rate.agency_name %} · {{ rate.agency_name }}{% endif %}</span>
+    <form method="post" action="/admin/clients/{{ organization.id }}/gst/rates/{{ rate.provider_id }}">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input name="reason" placeholder="How you know" required>
+      <button class="button-primary" name="classification" value="gst_hst">GST/HST</button>
+      <button class="button-secondary" name="classification" value="provincial">Provincial</button>
+    </form>
+  </div>
+  {% endfor %}
+  <p class="batch-note">Claiming provincial tax as an input tax credit overstates the credit on a return filed under the client's name, and the return looks entirely reasonable while it does it. Nothing is assumed here.</p>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>{% block title %}QuickBooks{% endblock %} — Shimline</title>
+  <link rel="icon" href="/favicon.svg?v={{ static_version }}" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico?v={{ static_version }}" sizes="32x32">
+  <link rel="stylesheet" href="/fonts/fonts.css?v={{ static_version }}">
+  <link rel="stylesheet" href="/qbo/static/qbo.css?v={{ static_version }}">
+</head>
+<body>
+  {{ icon_sprite() }}
+  <main class="panel">
+    <div class="wordmark">Shimline<span>.</span></div>
+    {% block content %}{% endblock %}
+    <p class="footnote">Shimline is operated by Tejova Financial Services. Client documents are held on Canadian infrastructure and deleted on the schedule set out in our <a class="text-link" href="https://shimline.ca/privacy.html">privacy policy</a>.</p>
+  </main>
+</body>
+</html>

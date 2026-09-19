@@ -1,0 +1,26 @@
+name: checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  focused-engine-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install focused test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest fastapi pydantic-settings httpx holidays python-multipart Jinja2 argon2-cffi pwdlib cryptography
+      - name: Run deterministic engine checks
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+        run: |
+          python -m pytest -q \
+            tests/test_qbo_adapter.py \
+            tests/test_postings.py \
+            tests/test_matching.py

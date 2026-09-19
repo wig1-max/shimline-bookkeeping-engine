@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Work{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>Work</h1><p>Every active engagement, ordered by service risk.</p></div></header>
+<form class="filter-bar" method="get"><select name="status" aria-label="Filter work by status" onchange="this.form.submit()"><option value="">All active work</option>{% for s in vocab.engagement.active() %}{% if s.on_path %}<option value="{{ s.code }}" {% if status==s.code %}selected{% endif %}>{{ s.label }}</option>{% endif %}{% endfor %}</select></form>
+<div class="data-list"><div class="data-head work-head"><span>Client / engagement</span><span>Status</span><span>Next action</span><span>Progress</span><span>Due</span><span></span></div>{% for item in rows %}<a class="data-row work-row" href="/admin/engagements/{{ item.id }}"><span><strong>{{ item.organization_name }}</strong><small>{{ item.accounting_period or '' }} {{ item.title }}</small></span><span class="status-pill status-{{ item.status }}">{{ item.status.replace('_',' ') }}</span><span>{{ item.next_item.title if item.next_item else 'Ready to deliver' }}</span><span>{{ item.work_done or 0 }}/{{ item.work_total or 0 }}</span><span class="tone-{{ item.due_tone }}">{{ item.due_label }}</span>{{ icon('chevron-right') }}</a>{% else %}<div class="empty-inline">No active work matches this filter.</div>{% endfor %}</div>
+{% with query = "status=" ~ status|urlencode ~ "&" %}{% include "_pager.html" %}{% endwith %}
+{% endblock %}

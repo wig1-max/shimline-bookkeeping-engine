@@ -1,0 +1,13 @@
+{% extends "qbo_base.html" %}{% block title %}Connect QuickBooks{% endblock %}
+{% block content %}
+<h1>Connecting QuickBooks is set up by your bookkeeper.</h1>
+<p>Shimline does not ask clients to manage their own integration. Your bookkeeper starts the connection from inside Shimline and sends you the approval link, so a connection is never created by someone landing on a page.</p>
+<p>When you approve it, Shimline receives <strong>accounting access</strong>. We inspect the books and can apply a correction only after it is evidenced and explicitly approved; we never delete entries or silently overwrite them. You can end access at any time from <strong>Settings → Apps</strong> in QuickBooks.</p>
+<div class="actions">
+  <a class="button" href="mailto:hello@shimline.ca?subject=Connect%20my%20QuickBooks">Ask us to set it up →</a>
+  <a class="text-link" href="https://shimline.ca">shimline.ca</a>
+</div>
+{% if environment == 'sandbox' %}
+<div class="sandbox-flag">This installation is pointed at Intuit's <strong>sandbox</strong>. It cannot reach live company data.</div>
+{% endif %}
+{% endblock %}

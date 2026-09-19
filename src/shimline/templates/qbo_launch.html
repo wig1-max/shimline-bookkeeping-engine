@@ -1,0 +1,13 @@
+{% extends "qbo_base.html" %}{% block title %}Shimline for QuickBooks{% endblock %}
+{% block content %}
+<h1>Shimline reads your QuickBooks reports so somebody can actually look at them.</h1>
+<p>Shimline is a bookkeeping service for Canadian contractors. We review your books, rank what is costing you money, and hand you findings you can act on — with a person accountable for the work.</p>
+<p>There is no client login here yet. Connections are set up by your bookkeeper from inside Shimline, so nothing happens on this page by accident.</p>
+<div class="actions">
+  <a class="button" href="https://shimline.ca">See what Shimline does →</a>
+  <a class="text-link" href="mailto:hello@shimline.ca">hello@shimline.ca</a>
+</div>
+{% if environment == 'sandbox' %}
+<div class="sandbox-flag">This installation is pointed at Intuit's <strong>sandbox</strong>. It cannot reach live company data.</div>
+{% endif %}
+{% endblock %}

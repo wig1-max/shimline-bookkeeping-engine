@@ -1,0 +1,26 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["node_modules", ".venv*", "backend/test_assets"]
+
+[tool.ruff.lint]
+# Start with correctness failures across the established codebase. New and
+# touched modules are checked with the broader rules in CI.
+select = ["E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/scripts/qbo_preflight.py" = ["F401"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+venvPath = "."
+venv = ".venv-performance-ux"
+include = [
+  "backend/shimline/settings.py",
+  "backend/shimline/telemetry.py",
+  "backend/shimline/emailing.py",
+  "backend/shimline/invoice_extract.py",
+  "backend/shimline/jobs.py"
+]
+exclude = ["**/__pycache__", ".venv*", "node_modules"]

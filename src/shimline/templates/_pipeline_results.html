@@ -1,0 +1,5 @@
+<div class="data-list">
+  <div class="data-head"><span>Company</span><span>Stage</span><span>Next action</span><span>Last touch</span><span></span></div>
+  {% for row in rows %}<a class="data-row" href="/admin/clients/{{ row.id }}"><span><strong>{% if row.fit_tier %}{{ row.fit_tier }} · {% endif %}{{ row.name }}</strong><small>{{ [row.city,row.specialty,row.outreach_route]|select|join(' · ') }}</small></span><span><span class="status-pill status-{{ row.stage }}">{{ 'do not contact' if row.do_not_contact else row.stage.replace('_',' ') }}</span></span><span>{{ row.next_action or 'Research decision maker' }}{% if row.buying_signal %}<small>{{ row.buying_signal }}</small>{% endif %}</span><span>{{ row.last_touch_at|display_date }}</span>{{ icon('chevron-right') }}</a>{% else %}<div class="empty-inline">No prospects match these filters.</div>{% endfor %}
+</div>
+{% with query = "q=" ~ q|urlencode ~ "&stage=" ~ stage|urlencode ~ "&" %}{% include "_pager.html" %}{% endwith %}

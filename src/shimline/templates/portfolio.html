@@ -1,0 +1,59 @@
+{% extends "base.html" %}{% block title %}Portfolio{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Portfolio</h1>
+    <p>{% if portfolio.firm_name %}{{ portfolio.firm_name }} — e{% else %}E{% endif %}very client, ordered by where the next hour goes.</p>
+  </div>
+  <div class="head-figures">
+    <span><strong>{{ portfolio.decisions_waiting }}</strong> decision{{ '' if portfolio.decisions_waiting == 1 else 's' }} waiting</span>
+    <span><strong>{{ portfolio.rows|length }}</strong> client{{ '' if portfolio.rows|length == 1 else 's' }}</span>
+  </div>
+</header>
+
+{% for state, label in state_labels %}
+  {% set group = portfolio.by_state(state) %}
+  {% if group %}
+  <section class="portfolio-group">
+    <h2 class="group-head state-{{ state }}">{{ label }} <span class="count">{{ group|length }}</span></h2>
+    <div class="data-list">
+      <div class="data-head portfolio-head">
+        <span>Client</span><span>Period</span><span>Waiting</span><span>Exposure</span><span>Verified</span><span></span>
+      </div>
+      {% for row in group %}
+      <a class="data-row portfolio-row" href="{{ '/admin/bookkeeping/' ~ row.run_id if row.run_id else '/admin/clients/' ~ row.organization_id }}">
+        <span><strong>{{ row.name }}</strong>{% if row.blocked_on %}<small>{{ row.blocked_on[0] }}{% if row.blocked_on|length > 1 %} (+{{ row.blocked_on|length - 1 }} more){% endif %}</small>{% endif %}</span>
+        <span>{{ row.period_end or '—' }}</span>
+        <span>
+          {%- if row.decisions_waiting %}{{ row.decisions_waiting }} to decide
+          {%- elif row.evidence_requests %}{{ row.evidence_requests }} document{{ '' if row.evidence_requests == 1 else 's' }} requested
+          {%- elif row.checks_blocked %}{{ row.checks_blocked }} check{{ '' if row.checks_blocked == 1 else 's' }} blocked
+          {%- else %}—{% endif -%}
+        </span>
+        <span>{% if row.exposure %}${{ '{:,.2f}'.format(row.exposure) }}{% else %}—{% endif %}</span>
+        <span>
+          {%- if not row.run_id %}<em class="tone-muted">not scanned</em>
+          {%- elif row.trustworthy %}<span class="verify-ok">{{ row.verification.ran }} of {{ row.verification.checks|length }} checks passed</span>
+          {%- else %}<span class="verify-bad">{{ row.verification.failures()|length }} check{{ '' if row.verification.failures()|length == 1 else 's' }} failed</span>{% endif -%}
+        </span>
+        {{ icon('chevron-right') }}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+{% endfor %}
+
+{% if not portfolio.rows %}
+<div class="empty-inline">
+  {% if scope_kind == 'firm' %}No clients have been assigned to you yet.
+  {% else %}No clients yet.{% endif %}
+</div>
+{% endif %}
+
+<section class="assurance">
+  <h2>{{ assurance.name }}</h2>
+  <p>{{ assurance.covers }}</p>
+  <p class="tone-muted"><strong>What this does not cover:</strong> {{ assurance.does_not_cover }}</p>
+</section>
+{% endblock %}

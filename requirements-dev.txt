@@ -1,0 +1,33 @@
+-r requirements.txt
+pytest==9.1.1
+
+# Reproducible performance, contract, browser, quality and security tooling.
+# Native profilers/load/contract runners currently publish no complete wheel
+# set for CPython 3.12 on Windows ARM64. They remain enabled on the Linux/x64
+# CI and production-like environments where they are supported.
+schemathesis==4.26.1; sys_platform != "win32" or platform_machine != "ARM64"
+locust==2.46.5; sys_platform != "win32" or platform_machine != "ARM64"
+py-spy==0.4.2; sys_platform != "win32" or platform_machine != "ARM64"
+pyinstrument==5.1.3; sys_platform != "win32" or platform_machine != "ARM64"
+ruff==0.16.7
+pyright==1.1.414
+pip-audit==2.10.1
+bandit==1.9.4
+playwright==1.62.0
+
+# ---------------------------------------------------------------------------
+# Differential double-entry oracle -- licence boundary, read before changing
+# ---------------------------------------------------------------------------
+# Beancount is GPL-2.0. It is used as an independent second implementation of
+# double entry: Shimline writes a ledger file and the `bean-check` *program* is
+# executed in a subprocess to recompute every balance. Shimline does not import
+# beancount, does not link against it, and does not distribute it. GPL
+# obligations attach to distribution and to derivative works; running an
+# unmodified program in your own CI is neither.
+#
+# That position is conventional, but it depends entirely on beancount staying
+# out of process. If anyone ever writes `import beancount` in shimline/, the
+# analysis changes completely and needs legal review before it ships.
+#
+# See shimline/beancount_export.py and test_beancount_oracle.py.
+beancount==3.2.3

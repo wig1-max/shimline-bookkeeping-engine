@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Measurement{% endblock %}
+{% block content %}
+<header class="page-head"><div><h1>Marketing measurement</h1><p>Consent-gated first-party activity, last {{ report.days }} days.</p></div></header>
+<section class="risk-overview"><div><p class="eyebrow">FUNNEL</p><h2>Qualified path to intake</h2>
+  <table class="summary-table"><thead><tr><th>Stage</th><th>Distinct sessions</th></tr></thead><tbody>
+  {% for row in report.funnel %}<tr><td>{{ row.label }}</td><td>{{ row.sessions }}</td></tr>{% endfor %}
+  <tr><td>Paid orders (verified record)</td><td>{{ report.paid_orders }}</td></tr>
+  </tbody></table></div>
+  <div><p class="eyebrow">SOURCE</p><h2>Visitors by campaign source</h2>
+  <table class="summary-table"><thead><tr><th>Source</th><th>Visitors</th><th>Sessions</th></tr></thead><tbody>
+  {% for row in report.channels %}<tr><td>{{ row.channel }}</td><td>{{ row.visitors }}</td><td>{{ row.sessions }}</td></tr>{% else %}<tr><td colspan="3">No consented measurement yet.</td></tr>{% endfor %}
+  </tbody></table></div></section>
+<p class="muted-copy">This view intentionally shows aggregates only. Use tagged URLs for campaigns; reconcile verified orders and submissions in the operations workspace before making spend decisions.</p>
+{% endblock %}
