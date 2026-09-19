@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use or reference this software, please cite it as below."
+title: "Shimline: evidence-native bookkeeping automation engine for QuickBooks Online"
+type: software
+authors:
+  - family-names: Madaan
+    given-names: Aryan
+    email: aryanmadaan@gmail.com
+repository-code: "https://github.com/wig1-max/shimline-bookkeeping-engine"
+license: Apache-2.0
+version: 0.1.0
+date-released: 2026-09-19
+keywords:
+  - bookkeeping automation
+  - QuickBooks Online
+  - double-entry accounting
+  - reconciliation
+  - GST/HST
+  - FastAPI
+abstract: >-
+  An open-source bookkeeping automation engine that pulls QuickBooks Online data,
+  reconstructs a double-entry ledger, runs deterministic accounting checks, turns
+  defects into human-approved correction proposals, writes them back idempotently,
+  verifies them by read-back and reconciles the result.

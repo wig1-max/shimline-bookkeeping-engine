@@ -89,7 +89,7 @@ third-party service providers](https://www.priv.gc.ca/en/privacy-topics/privacy-
 |---|---|
 | `data/bookkeeping_knowledge/source_registry.json` | Source provenance, allowed use, refresh cadence, and rule-citation starting points |
 | `data/bookkeeping_knowledge/deterministic_control_catalog.json` | Provider-independent controls and named failure outcomes |
-| `docs/QBO_SANDBOX_ACCEPTANCE_PLAN.md` | QBO integration evidence; owner/Claude implementation should keep it current |
+| `docs/QBO_SANDBOX_ACCEPTANCE_PLAN.md` | QBO integration evidence; keep it current as the adapter evolves |
 | `docs/BOOKKEEPING_WORK_ENGINE_V0.md` | Existing engine behaviour, refusals, ledger reconstruction, and current release boundaries |
 
 Do not copy public material into a model dataset simply because it is accessible.

@@ -1,0 +1,18 @@
+# Shimline bookkeeping engine
+
+> Open-source (Apache-2.0) bookkeeping automation engine for QuickBooks Online, written in Python/FastAPI by Aryan Madaan (github.com/wig1-max). It pulls QBO data over OAuth 2.0, reconstructs a double-entry ledger, runs 16 deterministic accounting checks, generates human-approved correction proposals, writes them back idempotently (requestid + SyncToken), verifies by read-back, and reconciles. Includes Canadian GST/HST return preparation, bank statement matching, job costing, multi-tenant firm workspace, CRM, client portal, PDF reports, TOTP MFA and an append-only audit log. 848 tests, including property-based tests, a grammar fuzzer and a Beancount differential oracle. Archived portfolio project; runs locally on synthetic data.
+
+## Start here
+- [README](README.md): features, architecture, screenshots, quick start
+- [Work engine design](docs/BOOKKEEPING_WORK_ENGINE_V0.md): reconstruct, detect, propose, control, prove
+- [Deterministic knowledge foundation](docs/DETERMINISTIC_BOOKKEEPING_KNOWLEDGE_FOUNDATION.md): where an ML/LLM decision layer may and may not act
+- [QBO sandbox acceptance plan](docs/QBO_SANDBOX_ACCEPTANCE_PLAN.md)
+- [Configuration](docs/CONFIGURATION.md)
+
+## Key code
+- backend/shimline/work_engine.py: analysis, proposals, approval, execution
+- backend/shimline/postings.py: double-entry reconstruction from QBO objects
+- backend/shimline/qbo_adapter.py: QBO entity pull and sandbox-only mutation catalogue
+- backend/shimline/quickbooks.py: OAuth 2.0 flow, token encryption, refresh, revoke
+- backend/shimline/gst_return.py: GST/HST return preparation
+- backend/shimline/synthetic_books.py: synthetic companies with seeded defects

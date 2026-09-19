@@ -1,0 +1,132 @@
+amount,category,date,line_item,project_id,txn_id,unit_price,vendor
+2450,Materials,2026-08-09,,,TXN-9000,,Metro Paint & Finishes
+1980,Materials,2026-05-15,,,TXN-9001,,GTA Plumbing Supply Co.
+3100,Materials,2026-04-03,,,TXN-9002,,ProBuild Materials
+1730,Materials,2026-08-16,,,TXN-9003,,GTA Plumbing Supply Co.
+2500,Materials,2026-08-06,,,TXN-9004,,Metro Paint & Finishes
+2140,Materials,2026-07-17,,251,TXN-9005,,ProBuild Materials
+2140,Materials,2026-07-19,,251,TXN-9006,,ProBuild Materials
+6673,Subcontractor,2026-04-15,,233,TXN-9007,,Metro Paint & Finishes
+6788,Labour,2026-03-08,,233,TXN-9008,,GTA Plumbing Supply Co.
+3359,Materials,2026-05-17,,233,TXN-9009,,Superior Drywall & Insulation
+4043,Subcontractor,2026-05-01,,233,TXN-9010,,Superior Drywall & Insulation
+4047,Subcontractor,2026-08-24,,233,TXN-9011,,ProBuild Materials
+2641,Materials,2026-08-01,,233,TXN-9012,,Metro Paint & Finishes
+14449,Subcontractor,2026-07-03,,233,TXN-9013,,Reliable Roofing Supply
+9236,Materials,2026-08-09,,237,TXN-9014,,Precision Cabinetry Ltd.
+9122,Labour,2026-05-06,,237,TXN-9015,,Elite Electrical Wholesale
+10562,Labour,2026-03-12,,237,TXN-9016,,Metro Paint & Finishes
+4344,Labour,2026-06-11,,237,TXN-9017,,Reliable Roofing Supply
+4560,Materials,2026-06-20,,237,TXN-9018,,Elite Electrical Wholesale
+8362,Subcontractor,2026-07-18,,237,TXN-9019,,Reliable Roofing Supply
+4144,Subcontractor,2026-02-24,,237,TXN-9020,,GTA Plumbing Supply Co.
+32270,Subcontractor,2026-03-04,,237,TXN-9021,,GTA Plumbing Supply Co.
+9184,Materials,2026-08-13,,241,TXN-9022,,Superior Drywall & Insulation
+8760,Materials,2026-08-15,,241,TXN-9023,,Superior Drywall & Insulation
+5683,Subcontractor,2026-03-16,,241,TXN-9024,,Elite Electrical Wholesale
+4141,Labour,2026-04-07,,241,TXN-9025,,Apex Tool Rental
+4928,Materials,2026-07-29,,241,TXN-9026,,Ontario Lumber Supply
+32604,Subcontractor,2026-04-09,,241,TXN-9027,,Elite Electrical Wholesale
+7097,Materials,2026-04-07,,205,TXN-9028,,Metro Paint & Finishes
+4250,Subcontractor,2026-06-09,,205,TXN-9029,,Ontario Lumber Supply
+5270,Materials,2026-05-27,,205,TXN-9030,,Ontario Lumber Supply
+22783,Subcontractor,2026-03-09,,205,TXN-9031,,GTA Plumbing Supply Co.
+2473,Labour,2026-05-14,,212,TXN-9032,,Reliable Roofing Supply
+3012,Materials,2026-07-16,,212,TXN-9033,,GTA Plumbing Supply Co.
+2733,Labour,2026-07-12,,212,TXN-9034,,Ontario Lumber Supply
+11982,Subcontractor,2026-05-13,,212,TXN-9035,,Precision Cabinetry Ltd.
+16578,Materials,2026-05-21,,219,TXN-9036,,ProBuild Materials
+24054,Subcontractor,2026-07-06,,219,TXN-9037,,GTA Plumbing Supply Co.
+13094,Materials,2026-06-30,,219,TXN-9038,,GTA Plumbing Supply Co.
+15008,Subcontractor,2026-06-03,,219,TXN-9039,,Northside Concrete
+79266,Subcontractor,2026-06-16,,219,TXN-9040,,ProBuild Materials
+10439,Labour,2026-03-06,,224,TXN-9041,,Northside Concrete
+6712,Subcontractor,2026-07-28,,224,TXN-9042,,Ontario Lumber Supply
+5005,Materials,2026-08-17,,224,TXN-9043,,Superior Drywall & Insulation
+6722,Subcontractor,2026-02-21,,224,TXN-9044,,Precision Cabinetry Ltd.
+4979,Subcontractor,2026-07-28,,224,TXN-9045,,Reliable Roofing Supply
+32643,Subcontractor,2026-07-09,,224,TXN-9046,,Metro Paint & Finishes
+1518,Labour,2026-08-26,,229,TXN-9047,,Northside Concrete
+3110,Labour,2026-03-04,,229,TXN-9048,,Reliable Roofing Supply
+2539,Subcontractor,2026-05-25,,229,TXN-9049,,GTA Plumbing Supply Co.
+939,Subcontractor,2026-03-20,,229,TXN-9050,,Precision Cabinetry Ltd.
+1547,Subcontractor,2026-02-23,,229,TXN-9051,,ProBuild Materials
+8147,Subcontractor,2026-06-08,,229,TXN-9052,,Reliable Roofing Supply
+4908,Materials,2026-04-07,,244,TXN-9053,,Superior Drywall & Insulation
+3738,Labour,2026-03-06,,244,TXN-9054,,Northside Concrete
+6131,Subcontractor,2026-04-03,,244,TXN-9055,,Metro Paint & Finishes
+3401,Subcontractor,2026-06-10,,244,TXN-9056,,Ontario Lumber Supply
+2422,Labour,2026-03-24,,244,TXN-9057,,Metro Paint & Finishes
+2444,Labour,2026-05-05,,244,TXN-9058,,Apex Tool Rental
+18156,Subcontractor,2026-04-18,,244,TXN-9059,,GTA Plumbing Supply Co.
+5397,Materials,2026-03-11,,248,TXN-9060,,Elite Electrical Wholesale
+2897,Materials,2026-06-02,,248,TXN-9061,,Metro Paint & Finishes
+4010,Subcontractor,2026-03-07,,248,TXN-9062,,GTA Plumbing Supply Co.
+1978,Materials,2026-07-20,,248,TXN-9063,,GTA Plumbing Supply Co.
+1413,Materials,2026-03-23,,248,TXN-9064,,Apex Tool Rental
+2033,Labour,2026-07-08,,248,TXN-9065,,Metro Paint & Finishes
+13072,Subcontractor,2026-04-22,,248,TXN-9066,,Northside Concrete
+14315,Materials,2026-02-15,,251,TXN-9067,,Ontario Lumber Supply
+20234,Labour,2026-07-12,,251,TXN-9068,,GTA Plumbing Supply Co.
+13710,Materials,2026-04-06,,251,TXN-9069,,Ontario Lumber Supply
+15728,Materials,2026-05-02,,251,TXN-9070,,ProBuild Materials
+11805,Labour,2026-04-05,,251,TXN-9071,,Reliable Roofing Supply
+6518,Labour,2026-03-23,,251,TXN-9072,,Apex Tool Rental
+48690,Subcontractor,2026-05-09,,251,TXN-9073,,Reliable Roofing Supply
+9545,Subcontractor,2026-02-17,,256,TXN-9074,,Elite Electrical Wholesale
+8302,Subcontractor,2026-03-16,,256,TXN-9075,,GTA Plumbing Supply Co.
+9222,Labour,2026-04-24,,256,TXN-9076,,Reliable Roofing Supply
+4830,Labour,2026-08-07,,256,TXN-9077,,Apex Tool Rental
+4525,Subcontractor,2026-06-02,,256,TXN-9078,,Superior Drywall & Insulation
+6564,Materials,2026-07-22,,256,TXN-9079,,ProBuild Materials
+3072,Materials,2026-02-27,,256,TXN-9080,,Elite Electrical Wholesale
+25440,Subcontractor,2026-05-12,,256,TXN-9081,,ProBuild Materials
+4800,Materials,2026-05-12,,260,TXN-9082,,Apex Tool Rental
+3700,Labour,2026-05-19,,260,TXN-9083,,Northside Concrete
+6115,Labour,2026-02-12,,260,TXN-9084,,Ontario Lumber Supply
+3202,Subcontractor,2026-05-28,,260,TXN-9085,,Ontario Lumber Supply
+3797,Labour,2026-04-11,,260,TXN-9086,,Northside Concrete
+3108,Subcontractor,2026-07-01,,260,TXN-9087,,Metro Paint & Finishes
+15378,Subcontractor,2026-06-18,,260,TXN-9088,,GTA Plumbing Supply Co.
+2627,Labour,2026-06-01,,263,TXN-9089,,Northside Concrete
+2644,Materials,2026-02-22,,263,TXN-9090,,Northside Concrete
+2483,Labour,2026-03-20,,263,TXN-9091,,Elite Electrical Wholesale
+936,Labour,2026-03-28,,263,TXN-9092,,Northside Concrete
+1645,Subcontractor,2026-03-15,,263,TXN-9093,,ProBuild Materials
+834,Materials,2026-07-11,,263,TXN-9094,,Apex Tool Rental
+7831,Subcontractor,2026-05-21,,263,TXN-9095,,Superior Drywall & Insulation
+3762,Subcontractor,2026-06-01,,267,TXN-9096,,Precision Cabinetry Ltd.
+3621,Materials,2026-06-23,,267,TXN-9097,,Northside Concrete
+3863,Subcontractor,2026-08-13,,267,TXN-9098,,Reliable Roofing Supply
+2614,Materials,2026-03-13,,267,TXN-9099,,ProBuild Materials
+3723,Materials,2026-07-06,,267,TXN-9100,,GTA Plumbing Supply Co.
+18117,Subcontractor,2026-07-18,,267,TXN-9101,,Metro Paint & Finishes
+2178,Materials,2026-04-04,,271,TXN-9102,,ProBuild Materials
+2814,Materials,2026-05-24,,271,TXN-9103,,Superior Drywall & Insulation
+2734,Subcontractor,2026-07-16,,271,TXN-9104,,ProBuild Materials
+1410,Labour,2026-06-08,,271,TXN-9105,,Ontario Lumber Supply
+13764,Subcontractor,2026-05-17,,271,TXN-9106,,Northside Concrete
+3992,Labour,2026-07-31,,275,TXN-9107,,GTA Plumbing Supply Co.
+7047,Labour,2026-07-27,,275,TXN-9108,,Metro Paint & Finishes
+5871,Subcontractor,2026-04-12,,275,TXN-9109,,Precision Cabinetry Ltd.
+4445,Labour,2026-04-19,,275,TXN-9110,,ProBuild Materials
+23445,Subcontractor,2026-08-23,,275,TXN-9111,,Precision Cabinetry Ltd.
+15044,Subcontractor,2026-05-08,,279,TXN-9112,,ProBuild Materials
+10807,Materials,2026-02-26,,279,TXN-9113,,Apex Tool Rental
+7717,Subcontractor,2026-03-13,,279,TXN-9114,,Reliable Roofing Supply
+7792,Subcontractor,2026-04-25,,279,TXN-9115,,Reliable Roofing Supply
+5666,Subcontractor,2026-06-19,,279,TXN-9116,,Metro Paint & Finishes
+6773,Subcontractor,2026-06-16,,279,TXN-9117,,ProBuild Materials
+30401,Subcontractor,2026-02-15,,279,TXN-9118,,GTA Plumbing Supply Co.
+20343,Materials,2026-06-01,,283,TXN-9119,,Northside Concrete
+16266,Subcontractor,2026-07-11,,283,TXN-9120,,Precision Cabinetry Ltd.
+10597,Subcontractor,2026-05-31,,283,TXN-9121,,Superior Drywall & Insulation
+16687,Materials,2026-04-06,,283,TXN-9122,,Superior Drywall & Insulation
+10395,Materials,2026-08-05,,283,TXN-9123,,GTA Plumbing Supply Co.
+10452,Materials,2026-04-06,,283,TXN-9124,,Apex Tool Rental
+52360,Subcontractor,2026-03-14,,283,TXN-9125,,Apex Tool Rental
+2440.0,Materials,2026-02-02,2x6 spruce framing lumber (per bundle of 40),,TXN-9126,61.0,Ontario Lumber Supply
+2500.0,Materials,2026-04-03,2x6 spruce framing lumber (per bundle of 40),,TXN-9127,62.5,Ontario Lumber Supply
+2600.0,Materials,2026-06-02,2x6 spruce framing lumber (per bundle of 40),,TXN-9128,65.0,Ontario Lumber Supply
+2720.0,Materials,2026-07-17,2x6 spruce framing lumber (per bundle of 40),,TXN-9129,68.0,Ontario Lumber Supply
+2800.0,Materials,2026-08-21,2x6 spruce framing lumber (per bundle of 40),,TXN-9130,70.0,Ontario Lumber Supply

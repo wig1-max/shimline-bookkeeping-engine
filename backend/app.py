@@ -16,7 +16,7 @@ Run locally to try it out:
   pip install -r requirements.txt
   uvicorn app:app --host 0.0.0.0 --port 8000
 
-See docs/DEPLOY.md for putting this on your actual server behind Nginx + HTTPS.
+See docs/CONFIGURATION.md for putting this on your actual server behind Nginx + HTTPS.
 """
 import base64
 import hashlib
@@ -50,7 +50,7 @@ DB_PATH = SETTINGS.db_path
 UPLOADS_DIR = SETTINGS.uploads_dir
 UPLOADS_DIR.mkdir(exist_ok=True)
 
-# ---- configuration (all via environment variables, see docs/DEPLOY.md) ----
+# ---- configuration (all via environment variables, see docs/CONFIGURATION.md) ----
 SMTP_HOST = SETTINGS.smtp_host
 SMTP_PORT = SETTINGS.smtp_port
 SMTP_USER = SETTINGS.smtp_user

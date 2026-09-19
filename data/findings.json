@@ -1,0 +1,227 @@
+{
+  "ar_aging": {
+    "0-30": 24900.0,
+    "31-60": 23100.0,
+    "61-90": 16000.0,
+    "90+": 18420.0
+  },
+  "ar_total_outstanding": 82420.0,
+  "ar_over_90": 18420.0,
+  "unapplied_payments_total": 3170.0,
+  "unapplied_payments_count": 3,
+  "unassigned_job_costs_total": 11760.0,
+  "unassigned_job_costs_count": 5,
+  "duplicate_vendor_charges_total": 2140.0,
+  "duplicate_vendor_charges_count": 1,
+  "projects": [
+    {
+      "project_id": "241",
+      "project_name": "Basement #241",
+      "customer": "Okafor Family Trust",
+      "revenue": 71000.0,
+      "cost": 65300.0,
+      "margin_pct": 8.0,
+      "status": "active"
+    },
+    {
+      "project_id": "251",
+      "project_name": "Full Reno #251",
+      "customer": "Whitfield Family Trust",
+      "revenue": 187000.0,
+      "cost": 135280.0,
+      "margin_pct": 27.7,
+      "status": "active"
+    },
+    {
+      "project_id": "219",
+      "project_name": "Full Reno #219",
+      "customer": "Marchetti Properties",
+      "revenue": 210000.0,
+      "cost": 148000.0,
+      "margin_pct": 29.5,
+      "status": "active"
+    },
+    {
+      "project_id": "283",
+      "project_name": "Full Reno #283",
+      "customer": "Whitfield Family Trust",
+      "revenue": 195000.0,
+      "cost": 137100.0,
+      "margin_pct": 29.7,
+      "status": "active"
+    },
+    {
+      "project_id": "237",
+      "project_name": "Addition #237",
+      "customer": "Bramwell Holdings",
+      "revenue": 118000.0,
+      "cost": 82600.0,
+      "margin_pct": 30.0,
+      "status": "completed"
+    },
+    {
+      "project_id": "279",
+      "project_name": "Addition #279",
+      "customer": "Marchetti Properties",
+      "revenue": 121000.0,
+      "cost": 84200.0,
+      "margin_pct": 30.4,
+      "status": "active"
+    },
+    {
+      "project_id": "256",
+      "project_name": "Addition #256",
+      "customer": "Nakamura Residence",
+      "revenue": 103000.0,
+      "cost": 71500.0,
+      "margin_pct": 30.6,
+      "status": "active"
+    },
+    {
+      "project_id": "224",
+      "project_name": "Addition #224",
+      "customer": "Kowalski Residence",
+      "revenue": 96000.0,
+      "cost": 66500.0,
+      "margin_pct": 30.7,
+      "status": "completed"
+    },
+    {
+      "project_id": "267",
+      "project_name": "Basement #267",
+      "customer": "Dorset Lane Properties",
+      "revenue": 52000.0,
+      "cost": 35700.0,
+      "margin_pct": 31.3,
+      "status": "active"
+    },
+    {
+      "project_id": "248",
+      "project_name": "Basement #248",
+      "customer": "Turnbull Residence",
+      "revenue": 45000.0,
+      "cost": 30800.0,
+      "margin_pct": 31.6,
+      "status": "completed"
+    },
+    {
+      "project_id": "260",
+      "project_name": "Kitchen #260",
+      "customer": "Bellview Holdings",
+      "revenue": 59000.0,
+      "cost": 40100.0,
+      "margin_pct": 32.0,
+      "status": "completed"
+    },
+    {
+      "project_id": "205",
+      "project_name": "Kitchen #205",
+      "customer": "Ashworth Residence",
+      "revenue": 58000.0,
+      "cost": 39400.0,
+      "margin_pct": 32.1,
+      "status": "completed"
+    },
+    {
+      "project_id": "275",
+      "project_name": "Kitchen #275",
+      "customer": "Levy Family Home",
+      "revenue": 66000.0,
+      "cost": 44800.0,
+      "margin_pct": 32.1,
+      "status": "active"
+    },
+    {
+      "project_id": "244",
+      "project_name": "Kitchen #244",
+      "customer": "Osei Household",
+      "revenue": 61000.0,
+      "cost": 41200.0,
+      "margin_pct": 32.5,
+      "status": "active"
+    },
+    {
+      "project_id": "271",
+      "project_name": "Deck & Patio #271",
+      "customer": "Fenwick Residence",
+      "revenue": 34000.0,
+      "cost": 22900.0,
+      "margin_pct": 32.6,
+      "status": "completed"
+    },
+    {
+      "project_id": "229",
+      "project_name": "Bathroom #229",
+      "customer": "Greenhill Rentals Inc.",
+      "revenue": 27000.0,
+      "cost": 17800.0,
+      "margin_pct": 34.1,
+      "status": "completed"
+    },
+    {
+      "project_id": "233",
+      "project_name": "Kitchen #233",
+      "customer": "Fenwick Residence",
+      "revenue": 64000.0,
+      "cost": 42000.0,
+      "margin_pct": 34.4,
+      "status": "completed"
+    },
+    {
+      "project_id": "263",
+      "project_name": "Bathroom #263",
+      "customer": "Chen-Patel Household",
+      "revenue": 29000.0,
+      "cost": 19000.0,
+      "margin_pct": 34.5,
+      "status": "completed"
+    },
+    {
+      "project_id": "212",
+      "project_name": "Bathroom #212",
+      "customer": "Levy Family Home",
+      "revenue": 31000.0,
+      "cost": 20200.0,
+      "margin_pct": 34.8,
+      "status": "completed"
+    }
+  ],
+  "portfolio_avg_margin_pct": 30.5,
+  "low_margin_projects": [
+    {
+      "project_id": "241",
+      "project_name": "Basement #241",
+      "customer": "Okafor Family Trust",
+      "revenue": 71000.0,
+      "cost": 65300.0,
+      "margin_pct": 8.0,
+      "status": "active"
+    }
+  ],
+  "worst_project": {
+    "project_id": "241",
+    "project_name": "Basement #241",
+    "customer": "Okafor Family Trust",
+    "revenue": 71000.0,
+    "cost": 65300.0,
+    "margin_pct": 8.0,
+    "status": "active"
+  },
+  "worst_project_margin_gap": 15955.0,
+  "vendor_price_variance": {
+    "line_item": "2x6 spruce framing lumber (per bundle of 40)",
+    "vendor": "Ontario Lumber Supply",
+    "first_price": 61.0,
+    "last_price": 70.0,
+    "pct_change": 14.8
+  },
+  "total_exposure": 51445.0,
+  "health_scores": {
+    "Reconciliation": 86,
+    "Receivables": 61,
+    "Job costing": 73,
+    "Expense classification": 92,
+    "Management reporting": 62,
+    "Total": 75
+  }
+}

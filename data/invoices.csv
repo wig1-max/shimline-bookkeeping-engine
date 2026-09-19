@@ -1,0 +1,53 @@
+amount,customer,days_outstanding,due_date,invoice_id,issue_date,status
+8400,Osei Household,12,2026-09-18,INV-1000,2026-08-19,unpaid
+5200,Okafor Family Trust,18,2026-09-12,INV-1001,2026-08-13,unpaid
+11300,Fenwick Residence,25,2026-09-05,INV-1002,2026-08-06,unpaid
+6100,Turnbull Residence,33,2026-08-28,INV-1003,2026-07-29,unpaid
+9800,Dorset Lane Properties,40,2026-08-21,INV-1004,2026-07-22,unpaid
+7200,Chen-Patel Household,52,2026-08-09,INV-1005,2026-07-10,unpaid
+4300,Chen-Patel Household,61,2026-07-31,INV-1006,2026-07-01,unpaid
+6600,Bramwell Holdings,70,2026-07-22,INV-1007,2026-06-22,unpaid
+5100,Turnbull Residence,81,2026-07-11,INV-1008,2026-06-11,unpaid
+6420,Okafor Family Trust,94,2026-06-28,INV-1009,2026-05-29,unpaid
+7800,Osei Household,101,2026-06-21,INV-1010,2026-05-22,unpaid
+4200,Turnbull Residence,118,2026-06-04,INV-1011,2026-05-05,unpaid
+11674,Okafor Family Trust,0,2025-12-24,INV-1012,2025-11-24,paid
+2488,Fenwick Residence,0,2026-02-25,INV-1013,2026-01-26,paid
+5811,Chen-Patel Household,0,2026-08-13,INV-1014,2026-07-14,paid
+2434,Greenhill Rentals Inc.,0,2026-01-14,INV-1015,2025-12-15,paid
+13731,Chen-Patel Household,0,2025-12-16,INV-1016,2025-11-16,paid
+10928,Turnbull Residence,0,2025-11-01,INV-1017,2025-10-02,paid
+9359,Chen-Patel Household,0,2026-02-27,INV-1018,2026-01-28,paid
+15261,Dorset Lane Properties,0,2025-12-02,INV-1019,2025-11-02,paid
+15202,Whitfield Family Trust,0,2026-09-26,INV-1020,2026-08-27,paid
+8924,Turnbull Residence,0,2026-07-10,INV-1021,2026-06-10,paid
+4547,Dorset Lane Properties,0,2026-04-08,INV-1022,2026-03-09,paid
+7514,Whitfield Family Trust,0,2026-06-11,INV-1023,2026-05-12,paid
+8224,Okafor Family Trust,0,2026-08-08,INV-1024,2026-07-09,paid
+15885,Ashworth Residence,0,2026-08-11,INV-1025,2026-07-12,paid
+6333,Greenhill Rentals Inc.,0,2026-04-06,INV-1026,2026-03-07,paid
+9527,Turnbull Residence,0,2026-09-07,INV-1027,2026-08-08,paid
+17943,Okafor Family Trust,0,2025-12-29,INV-1028,2025-11-29,paid
+11044,Okafor Family Trust,0,2026-03-20,INV-1029,2026-02-18,paid
+12299,Nakamura Residence,0,2026-05-02,INV-1030,2026-04-02,paid
+16118,Bellview Holdings,0,2025-11-17,INV-1031,2025-10-18,paid
+5150,Greenhill Rentals Inc.,0,2026-03-28,INV-1032,2026-02-26,paid
+2750,Okafor Family Trust,0,2025-10-04,INV-1033,2025-09-04,paid
+14665,Chen-Patel Household,0,2025-10-26,INV-1034,2025-09-26,paid
+16013,Okafor Family Trust,0,2026-05-04,INV-1035,2026-04-04,paid
+3654,Nakamura Residence,0,2026-06-02,INV-1036,2026-05-03,paid
+9428,Dorset Lane Properties,0,2026-03-19,INV-1037,2026-02-17,paid
+7977,Nakamura Residence,0,2025-11-08,INV-1038,2025-10-09,paid
+7820,Ashworth Residence,0,2026-07-08,INV-1039,2026-06-08,paid
+6374,Osei Household,0,2026-06-14,INV-1040,2026-05-15,paid
+13199,Bellview Holdings,0,2025-10-05,INV-1041,2025-09-05,paid
+11980,Okafor Family Trust,0,2025-11-02,INV-1042,2025-10-03,paid
+10751,Bramwell Holdings,0,2025-11-08,INV-1043,2025-10-09,paid
+4677,Chen-Patel Household,0,2025-09-21,INV-1044,2025-08-22,paid
+6422,Levy Family Home,0,2026-02-05,INV-1045,2026-01-06,paid
+11125,Turnbull Residence,0,2025-11-06,INV-1046,2025-10-07,paid
+7313,Osei Household,0,2026-06-09,INV-1047,2026-05-10,paid
+2916,Whitfield Family Trust,0,2025-09-01,INV-1048,2025-08-02,paid
+2525,Nakamura Residence,0,2026-06-04,INV-1049,2026-05-05,paid
+6386,Levy Family Home,0,2026-04-21,INV-1050,2026-03-22,paid
+16960,Chen-Patel Household,0,2026-08-27,INV-1051,2026-07-28,paid

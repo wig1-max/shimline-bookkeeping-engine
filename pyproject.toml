@@ -1,3 +1,35 @@
+[project]
+name = "shimline-bookkeeping-engine"
+version = "0.1.0"
+description = "Evidence-native bookkeeping automation engine for QuickBooks Online: double-entry reconstruction, deterministic accounting checks, approval-gated write-back, reconciliation and GST/HST preparation."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Aryan Madaan", email = "aryanmadaan@gmail.com" }]
+maintainers = [{ name = "Aryan Madaan", email = "aryanmadaan@gmail.com" }]
+keywords = [
+  "bookkeeping", "accounting", "quickbooks", "quickbooks-online", "qbo", "intuit",
+  "double-entry", "ledger", "reconciliation", "bank-reconciliation", "gst", "hst",
+  "sales-tax", "job-costing", "construction-accounting", "fintech", "fastapi",
+  "oauth2", "audit-trail", "accounting-automation", "bookkeeping-automation",
+]
+classifiers = [
+  "Development Status :: 7 - Inactive",
+  "Framework :: FastAPI",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business :: Financial :: Accounting",
+]
+
+[project.urls]
+Homepage = "https://github.com/wig1-max/shimline-bookkeeping-engine"
+Source = "https://github.com/wig1-max/shimline-bookkeeping-engine"
+Documentation = "https://github.com/wig1-max/shimline-bookkeeping-engine/tree/main/docs"
+Issues = "https://github.com/wig1-max/shimline-bookkeeping-engine/issues"
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
@@ -15,7 +47,6 @@ select = ["E9", "F"]
 pythonVersion = "3.12"
 typeCheckingMode = "basic"
 venvPath = "."
-venv = ".venv-performance-ux"
 include = [
   "backend/shimline/settings.py",
   "backend/shimline/telemetry.py",

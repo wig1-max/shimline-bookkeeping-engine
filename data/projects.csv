@@ -1,0 +1,20 @@
+actual_cost,customer,project_id,project_name,revenue,status
+42000,Fenwick Residence,233,Kitchen #233,64000,completed
+82600,Bramwell Holdings,237,Addition #237,118000,completed
+65300,Okafor Family Trust,241,Basement #241,71000,active
+39400,Ashworth Residence,205,Kitchen #205,58000,completed
+20200,Levy Family Home,212,Bathroom #212,31000,completed
+148000,Marchetti Properties,219,Full Reno #219,210000,active
+66500,Kowalski Residence,224,Addition #224,96000,completed
+17800,Greenhill Rentals Inc.,229,Bathroom #229,27000,completed
+41200,Osei Household,244,Kitchen #244,61000,active
+30800,Turnbull Residence,248,Basement #248,45000,completed
+135280,Whitfield Family Trust,251,Full Reno #251,187000,active
+71500,Nakamura Residence,256,Addition #256,103000,active
+40100,Bellview Holdings,260,Kitchen #260,59000,completed
+19000,Chen-Patel Household,263,Bathroom #263,29000,completed
+35700,Dorset Lane Properties,267,Basement #267,52000,active
+22900,Fenwick Residence,271,Deck & Patio #271,34000,completed
+44800,Levy Family Home,275,Kitchen #275,66000,active
+84200,Marchetti Properties,279,Addition #279,121000,active
+137100,Whitfield Family Trust,283,Full Reno #283,195000,active

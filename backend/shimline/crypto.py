@@ -7,7 +7,7 @@ mistake in one place cannot decrypt the other.
 
 Rotating the master invalidates everything derived from it. That is a real
 operational event, not a routine one: every stored QuickBooks token becomes
-undecryptable and every operator has to re-enrol MFA. See docs/DEPLOY.md.
+undecryptable and every operator has to re-enrol MFA. See docs/CONFIGURATION.md.
 """
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def master_key() -> bytes:
     raw = raw.strip()
     if not raw:
         raise KeyUnavailable(
-            "SHIMLINE_SECRET_KEY is not set on the server — see docs/DEPLOY.md. "
+            "SHIMLINE_SECRET_KEY is not set on the server — see docs/CONFIGURATION.md. "
             "Refusing to store a secret unencrypted."
         )
     if len(raw) < MIN_KEY_LENGTH:

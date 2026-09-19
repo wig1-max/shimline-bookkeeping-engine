@@ -126,8 +126,8 @@ class QBOAdapter:
         self.sleep = sleep
         # Intuit meters data-out -- reads and reports -- not writes, and this
         # product is almost entirely data-out. Counting calls while client
-        # files are small turns the capacity estimate in
-        # docs/INTUIT_ECOSYSTEM_RESEARCH.md into a measurement. Every HTTP
+        # files are small turns the Intuit App Partner Program capacity
+        # estimate into a measurement. Every HTTP
         # attempt is counted, retries included, because Intuit meters attempts.
         self.api_calls: dict[str, int] = {}
 
